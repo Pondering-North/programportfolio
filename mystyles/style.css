@@ -4,3 +4,16 @@ body {
     background-color: rgb(255, 187, 215);
     font-family: 'Times New Roman', Times, serif;
 }
+
+/* Header/Logo Title */
+.header {
+  padding: 60px;
+  text-align: center;
+  color: white;
+  font-size: 30px;
+  font-family:Verdana, Geneva, Tahoma, sans-serif
+}
+
+.content {
+    padding: 20px
+}
