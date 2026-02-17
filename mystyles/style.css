@@ -2,7 +2,7 @@
 
 body {
     background-color: rgb(255, 187, 215);
-    font-family: 'Times New Roman', Times, serif;
+    font-family: 'Georgia, Times New Roman, serif';
 }
 
 /* Header/Logo Title */
@@ -11,9 +11,13 @@ body {
   text-align: center;
   color: white;
   font-size: 30px;
-  font-family:Verdana, Geneva, Tahoma, sans-serif
+  font-family: Georgia, Times New Roman, serif;
 }
 
 .content {
+    padding: 20px
+}
+
+.linksect {
     padding: 20px
 }
