@@ -1,23 +1,32 @@
 /* style.css */
 
 body {
-    background-color: rgb(255, 187, 215);
+    background-color: rgb(255, 215, 232);
     font-family: 'Georgia, Times New Roman, serif';
 }
 
 /* Header/Logo Title */
 .header {
-  padding: 60px;
+  box-sizing: border-box;
+  border: solid rgb(255, 242, 203);
+  padding: 40px;
+  margin: 20px;
+  background-color: rgb(255, 187, 215);
+
   text-align: center;
   color: white;
-  font-size: 30px;
+  font-size: 40px;
   font-family: Georgia, Times New Roman, serif;
 }
 
 .content {
-    padding: 20px
+  box-sizing: content-box;
+  margin: 10px;
+  padding: 15px;
 }
 
-.linksect {
-    padding: 20px
+.linkbox {
+  box-sizing: content-box;
+  margin: 10px;
+  padding: 10px;
 }
