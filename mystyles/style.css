@@ -1,32 +1,347 @@
-/* style.css */
+/* ============================================================
+   style.css 
+   ============================================================ */
+
+/* ── Google Fonts import ─────────────────────────────────────
+   Keep this here OR as a <link> in each page's <head>.
+   If you use <link> tags instead, delete this @import.       */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap');
+
+/* ── CSS variables ─────────────────────────────────────────── */
+:root {
+  --rose:        #f2b8c6;
+  --rose-light:  #fce4ec;
+  --rose-deep:   #d4829a;
+  --blush:       #fdf0f4;
+  --gold:        #c9a84c;
+  --gold-light:  #e8d08a;
+  --gold-pale:   #f5e9c4;
+  --gold-dark:   #8a6820;
+  --text-dark:   #3d2233;
+  --text-mid:    #6b3d52;
+  --text-soft:   #a06080;
+  --white-glass: rgba(255,255,255,0.55);
+  --nav-height:  72px;
+}
+
+/* ── reset ──────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
-    background-color: rgb(255, 215, 232);
-    font-family: 'Georgia, Times New Roman, serif';
+  font-family: 'Jost', sans-serif;
+  background: var(--blush);
+  color: var(--text-dark);
 }
 
-/* Header/Logo Title */
-.header {
-  box-sizing: border-box;
-  border: solid rgb(255, 242, 203);
-  padding: 40px;
-  margin: 20px;
-  background-color: rgb(255, 187, 215);
+/* ── Sticky nav wrapper ─────────────────────────────────────── */
+.nav-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1.5px solid var(--gold);
+  box-shadow:
+    0 0 0 1px var(--gold-pale),
+    0 0 12px 2px rgba(201,168,76,0.18),
+    0 4px 32px rgba(212,130,154,0.18);
+  animation: navReveal 0.7s cubic-bezier(0.4,0,0.2,1) both;
+}
 
+/* ── Embroidered bar (top) ──────────────────────────────── */
+.nav-wrapper::before {
+  content: '';
+  display: block;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--gold-pale) 10%,
+    var(--gold-light) 30%,
+    var(--gold) 50%,
+    var(--gold-light) 70%,
+    var(--gold-pale) 90%,
+    transparent 100%
+  );
+}
+
+/* ── Embroidered bar (bottom) ───────────────────────────── */
+.nav-wrapper::after {
+  content: '';
+  display: block;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201,168,76,0.3) 15%,
+    rgba(232,208,138,0.7) 40%,
+    rgba(201,168,76,0.9) 50%,
+    rgba(232,208,138,0.7) 60%,
+    rgba(201,168,76,0.3) 85%,
+    transparent 100%
+  );
+}
+
+/* ── Nav Inner ───────────────────── */
+.nav-inner {
+  position: relative;
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3rem;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      108deg,
+      rgba(252,228,236,0.96) 0%,
+      rgba(242,184,198,0.88) 38%,
+      rgba(232,208,138,0.22) 70%,
+      rgba(245,233,196,0.30) 100%
+    ),
+    linear-gradient(
+      200deg,
+      rgba(255,255,255,0.82) 0%,
+      rgba(252,228,236,0.60) 100%
+    );
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+}
+
+/* SVG wave overlay */
+.nav-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='72' viewBox='0 0 900 72'%3E%3Cpath d='M0 48 Q120 18 240 40 Q360 62 480 32 Q600 2 720 38 Q840 60 900 44 L900 72 L0 72Z' fill='rgba(201,168,76,0.06)'/%3E%3Cpath d='M0 58 Q150 38 300 52 Q450 66 600 42 Q750 18 900 56 L900 72 L0 72Z' fill='rgba(242,184,198,0.12)'/%3E%3C/svg%3E");
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* ── Logo ───────────────────────────────────────────────────── */
+.nav-logo {
+  position: relative;
+  z-index: 2;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 1.65rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  white-space: nowrap;
+  background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: opacity 0.3s;
+  animation: navReveal 0.7s 0.15s cubic-bezier(0.4,0,0.2,1) both;
+}
+.nav-logo:hover { opacity: 0.78; }
+
+/* ── Nav links ──────────────────────────────────────────────── */
+.nav-links {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+  animation: navReveal 0.7s 0.25s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+.nav-links li { position: relative; }
+
+.nav-links a {
+  display: block;
+  padding: 0.45rem 1.3rem;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+/* Separator dots between links */
+.nav-links li + li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold);
+  font-size: 0.9rem;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Gold underline on hover */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 1.3rem;
+  right: 1.3rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+.nav-links a:hover { color: var(--text-dark); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+.nav-links a.active {
+  color: var(--gold-dark);
+  font-weight: 400;
+}
+.nav-links a.active::after { transform: scaleX(1); }
+
+/* ── CTA button ─────────────────────────────────────────────── */
+.nav-cta {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  padding: 0.5rem 1.4rem;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--gold-dark);
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  background: linear-gradient(135deg, rgba(245,233,196,0.55), rgba(232,208,138,0.18));
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  white-space: nowrap;
+  animation: navReveal 0.7s 0.35s cubic-bezier(0.4,0,0.2,1) both;
+}
+.nav-cta:hover {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold-pale));
+  color: var(--gold-dark);
+  box-shadow: 0 2px 16px rgba(201,168,76,0.28);
+}
+
+/* ── Hamburger (mobile) ─────────────────────────────────────── */
+.nav-hamburger {
+  display: none;
+  position: relative;
+  z-index: 2;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--gold);
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+/* ── Mobile menu ────────────────────────────────────────────── */
+.nav-mobile {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(253,240,244,0.97);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--gold);
+  padding: 1.5rem 2rem 2rem;
+}
+.nav-mobile.open { display: block; }
+.nav-mobile ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.nav-mobile a {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  text-decoration: none;
+}
+.nav-mobile a:hover { color: var(--gold-dark); }
+.nav-mobile .nav-cta { margin-top: 1.5rem; display: inline-block; }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .nav-links, .nav-cta { display: none; }
+  .nav-hamburger { display: flex; }
+  .nav-inner { padding: 0 1.5rem; }
+}
+
+/* ── Nav reveal animation───────────────────────────────────── */
+@keyframes navReveal {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Page layout helpers ────────────────────────────────────── */
+
+.page-hero {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1.2rem;
   text-align: center;
-  color: white;
-  font-size: 40px;
-  font-family: Georgia, Times New Roman, serif;
+  padding: 4rem 2rem;
+  background: linear-gradient(160deg, var(--blush) 0%, var(--rose-light) 60%, var(--gold-pale) 100%);
 }
 
-.content {
-  box-sizing: content-box;
-  margin: 10px;
-  padding: 15px;
+.page-hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  color: var(--text-dark);
+  letter-spacing: 0.04em;
 }
 
-.linkbox {
-  box-sizing: content-box;
-  margin: 10px;
-  padding: 10px;
+.page-hero p {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  color: var(--text-soft);
+  max-width: 44ch;
+}
+
+.page-section {
+  padding: 5rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--text-soft);
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  letter-spacing: 0.08em;
+}
+
+.page-section h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 2rem;
+  color: var(--text-mid);
+  margin-bottom: 1rem;
 }
