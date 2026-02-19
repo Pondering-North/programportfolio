@@ -1,31 +1,902 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="mystyles/style.css">
-        <title>Item Price Estimator</title>
-    </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Price Estimator — Olivia Balas</title>
 
-    <body>
-        <h1>Item Price Estimator</h1>
-        <!--Insert an icon (HANDDRAWN) for the app.-->
-        <p>The item price estimator is my first app and my first experiment with vibe-coding. The majority of it 
-            was coded with the Antigravity App, though I went through the code myself to make the changes needed
-            for the app to function properly. While there are understandable concerns about AI replacing peoples'
-            jobs, I don't think coders will have to worry - the process of building the app was faster, but it took
-            the same amount of time to debug everything! </p>
-        <p>The function of the app is very simple. Using your device's camera, you take a picture of an object. 
-            The app then uses <em>retrieval augmented generation</em> (RAG) to retrieve search results containing the same
-            (or a similar) object; it uses those search results to estimate the price of the object based on its 
-            quality. Add a funky psychedelic theme, and the result is a handy, stylish litle gadget that makes pricing your 
-            items much easier!
-        </p>
-        <p>Whether you're organizing a garage sale, getting rid of old furniture, or just curious, the Item Estimator
-            provides a simple way to help you out.
-        </p>
-        <h3>Check it out here.</h3>
-        <p><a href="https://item-price-estimator-lt6vry4gra-uc.a.run.app/"
-        target="_blank" rel="noopener noreferrer">Check it out here!</a></p>
-    </body>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+  <!-- TensorFlow + MobileNet (for the demo) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.1"></script>
+
+  <link rel="stylesheet" href="mystyles/style.css">
+
+  <style>
+       /* ── Widget shell ─────────────────────────────────────────── */
+    .demo-widget {
+      margin: 3rem auto 0;
+      max-width: 1100px;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      border: 2px solid hsl(320, 100%, 50%);
+      box-shadow:
+        0 12px 48px rgba(0,0,0,0.5),
+        0 0 25px hsl(320, 100%, 50%);
+      position: relative;
+      font-family: 'Quicksand', sans-serif;
+      color: hsl(60, 100%, 95%);
+    }
+
+    /* Psychedelic spinning background — same as the real app */
+    .demo-widget .w-bg {
+      position: absolute;
+      inset: 0;
+      background: conic-gradient(from 0deg at 50% 50%,
+        hsl(320,100%,50%),
+        hsl(280,100%,50%),
+        hsl(180,100%,50%),
+        hsl(60,100%,50%),
+        hsl(320,100%,50%)
+      );
+      opacity: 0.15;
+      animation: w-spin 20s linear infinite;
+      filter: blur(60px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    @keyframes w-spin {
+      from { transform: rotate(0deg) scale(1.5); }
+      to   { transform: rotate(360deg) scale(1.5); }
+    }
+
+    /* Dark purple base */
+    .demo-widget .w-inner {
+      position: relative;
+      z-index: 1;
+      background: hsl(280, 50%, 10%);
+      padding: 1.5rem;
+    }
+
+    /* ── Widget header ────────────────────────────────────────── */
+    .demo-widget .w-title {
+      font-family: 'Shrikhand', cursive;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 400;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg,
+        hsl(320,100%,50%) 0%,
+        hsl(280,100%,50%) 25%,
+        hsl(180,100%,50%) 50%,
+        hsl(60,100%,50%)  75%,
+        hsl(320,100%,50%) 100%
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 5px hsl(320,100%,50%));
+      transform: rotate(-1deg);
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .demo-widget .w-subtitle {
+      font-size: 0.85rem;
+      color: hsl(180, 50%, 80%);
+      font-weight: 300;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── Main grid (camera | table) ───────────────────────────── */
+    .demo-widget .w-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 600px) {
+      .demo-widget .w-grid {
+        grid-template-columns: minmax(220px, 300px) 1fr;
+      }
+    }
+
+    /* ── Glass card ───────────────────────────────────────────── */
+    .demo-widget .w-card {
+      background: hsla(280, 40%, 15%, 0.7);
+      backdrop-filter: blur(20px);
+      border: 2px solid hsl(320, 100%, 50%);
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 15px hsla(320,100%,50%,0.3);
+      padding: 1rem;
+    }
+
+    /* ── Camera container ─────────────────────────────────────── */
+    .demo-widget .w-camera-box {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: hsl(280, 60%, 5%);
+      border-radius: 1rem;
+      overflow: hidden;
+      margin-bottom: 0.8rem;
+      border: 2px solid hsl(190, 80%, 60%);
+      box-shadow: 0 0 10px hsl(190, 80%, 60%);
+    }
+
+    .demo-widget .w-camera-box video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Status pill */
+    .demo-widget .w-status {
+      position: absolute;
+      top: 0.6rem;
+      left: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: hsla(0,0%,0%,0.7);
+      backdrop-filter: blur(10px);
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .demo-widget .w-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: hsl(0, 100%, 60%);
+      animation: w-pulse 2s ease infinite;
+    }
+    .demo-widget .w-dot.active  { background: hsl(120, 100%, 40%); }
+    .demo-widget .w-dot.loading { background: hsl(40, 100%, 50%); }
+
+    @keyframes w-pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
+    }
+
+    /* ── Buttons ──────────────────────────────────────────────── */
+    .demo-widget .w-controls {
+      display: flex;
+      gap: 0.6rem;
+    }
+
+    .demo-widget .w-btn {
+      flex: 1;
+      padding: 0.65rem 0.8rem;
+      border: none;
+      border-radius: 1rem;
+      font-family: 'Shrikhand', cursive;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: all 300ms cubic-bezier(0.175,0.885,0.32,1.275);
+      position: relative;
+      overflow: hidden;
+    }
+    .demo-widget .w-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.35) 50%, transparent 60%);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+    .demo-widget .w-btn:hover::before { transform: translateX(100%); }
+    .demo-widget .w-btn:hover { transform: scale(1.05) rotate(-1deg); }
+    .demo-widget .w-btn:disabled { opacity: 0.45; cursor: not-allowed; filter: grayscale(0.7); transform: none; }
+
+    .demo-widget .w-btn-capture {
+      background: linear-gradient(135deg,
+        hsl(320,100%,50%) 0%,
+        hsl(280,100%,50%) 25%,
+        hsl(180,100%,50%) 50%,
+        hsl(60,100%,50%)  75%,
+        hsl(320,100%,50%) 100%
+      );
+      color: white;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 15px hsl(320,100%,50%);
+    }
+    .demo-widget .w-btn-capture:hover:not(:disabled) {
+      box-shadow: 0 12px 48px rgba(0,0,0,0.5), 0 0 25px hsl(320,100%,50%);
+    }
+
+    .demo-widget .w-btn-clear {
+      background: transparent;
+      color: hsl(190, 80%, 60%);
+      border: 2px solid hsl(190, 80%, 60%);
+      box-shadow: 0 0 10px hsla(180,100%,50%,0.2);
+    }
+    .demo-widget .w-btn-clear:hover {
+      background: hsl(190, 80%, 60%);
+      color: hsl(280, 50%, 10%);
+      box-shadow: 0 0 20px hsl(190, 80%, 60%);
+    }
+
+    /* ── Results header ───────────────────────────────────────── */
+    .demo-widget .w-results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .demo-widget .w-results-title {
+      font-family: 'Shrikhand', cursive;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: hsl(60, 100%, 95%);
+    }
+
+    .demo-widget .w-count {
+      background: linear-gradient(135deg,
+        hsl(320,100%,50%) 0%,
+        hsl(280,100%,50%) 50%,
+        hsl(180,100%,50%) 100%
+      );
+      color: white;
+      padding: 0.2rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* ── Table ────────────────────────────────────────────────── */
+    .demo-widget .w-table-wrap {
+      overflow-x: auto;
+    }
+
+    .demo-widget .w-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 0.4rem;
+      font-size: 0.82rem;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .demo-widget .w-table thead th {
+      background: transparent;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      font-family: 'Shrikhand', cursive;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      color: hsl(190, 80%, 60%);
+      border-bottom: 2px solid hsl(320, 100%, 50%);
+      white-space: nowrap;
+    }
+
+    .demo-widget .w-table tbody tr {
+      background: hsla(280, 40%, 20%, 0.4);
+      transition: all 300ms cubic-bezier(0.175,0.885,0.32,1.275);
+    }
+    .demo-widget .w-table tbody tr:hover:not(.w-empty) {
+      background: hsla(280, 40%, 30%, 0.6);
+      transform: scale(1.01);
+      box-shadow: 0 0 15px hsl(320, 100%, 50%);
+    }
+    .demo-widget .w-table tbody tr:hover:not(.w-empty) td {
+      border-color: hsl(320, 100%, 50%);
+    }
+
+    .demo-widget .w-table td {
+      padding: 0.5rem 0.75rem;
+      color: hsl(60, 100%, 95%);
+      border-top: 1px solid transparent;
+      border-bottom: 1px solid transparent;
+      vertical-align: middle;
+    }
+    .demo-widget .w-table td:first-child {
+      border-radius: 0.8rem 0 0 0.8rem;
+      border-left: 1px solid transparent;
+    }
+    .demo-widget .w-table td:last-child {
+      border-radius: 0 0.8rem 0.8rem 0;
+      border-right: 1px solid transparent;
+    }
+
+    /* Item thumbnail */
+    .demo-widget .w-thumb {
+      width: 64px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 0.6rem;
+      border: 2px solid hsl(190, 80%, 60%);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 300ms cubic-bezier(0.175,0.885,0.32,1.275);
+      cursor: pointer;
+    }
+    .demo-widget .w-thumb:hover {
+      transform: scale(2.2) rotate(4deg);
+      box-shadow: 0 0 20px hsl(190, 80%, 60%);
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Price */
+    .demo-widget .w-price {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: hsl(45, 100%, 50%);
+      text-shadow: 0 0 5px hsl(45, 100%, 50%);
+    }
+
+    /* Wear select — matches real app's psychedelic dropdowns */
+    .demo-widget .w-wear-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .demo-widget .w-wear-wrap::after {
+      content: '▼';
+      font-size: 0.6em;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: inherit;
+      text-shadow: 0 0 5px currentColor;
+    }
+
+    .demo-widget .w-wear {
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: hsla(280, 60%, 10%, 0.85);
+      border: 2px solid transparent;
+      border-radius: 999px;
+      padding: 5px 28px 5px 12px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      color: white;
+      transition: all 0.3s ease;
+      min-width: 100px;
+    }
+    .demo-widget .w-wear:hover { transform: translateY(-2px) scale(1.05); }
+    .demo-widget .w-wear:focus { outline: none; box-shadow: 0 0 0 3px rgba(255,255,255,0.2); }
+    .demo-widget .w-wear option { background-color: hsl(280, 50%, 10%); color: white; }
+
+    .demo-widget .w-wear.new      { border-color: #00ff9d; color: #00ff9d; text-shadow: 0 0 8px #00ff9d; }
+    .demo-widget .w-wear.like-new { border-color: #00e5ff; color: #00e5ff; text-shadow: 0 0 8px #00e5ff; }
+    .demo-widget .w-wear.good     { border-color: #b700ff; color: #b700ff; text-shadow: 0 0 8px #b700ff; }
+    .demo-widget .w-wear.fair     { border-color: #ff9500; color: #ff9500; text-shadow: 0 0 8px #ff9500; }
+    .demo-widget .w-wear.poor     { border-color: #ff0055; color: #ff0055; text-shadow: 0 0 8px #ff0055; }
+
+    .demo-widget .w-wear-wrap.new::after      { color: #00ff9d; }
+    .demo-widget .w-wear-wrap.like-new::after { color: #00e5ff; }
+    .demo-widget .w-wear-wrap.good::after     { color: #b700ff; }
+    .demo-widget .w-wear-wrap.fair::after     { color: #ff9500; }
+    .demo-widget .w-wear-wrap.poor::after     { color: #ff0055; }
+
+    /* Spinner */
+    .demo-widget .w-spinner-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: hsl(180, 50%, 80%);
+      font-size: 0.8rem;
+      font-style: italic;
+    }
+    .demo-widget .w-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid hsl(280, 30%, 60%);
+      border-top-color: hsl(320, 100%, 50%);
+      border-radius: 50%;
+      animation: w-spin-sm 1s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes w-spin-sm { to { transform: rotate(360deg); } }
+
+    /* Timestamp */
+    .demo-widget .w-ts {
+      font-size: 0.72rem;
+      color: hsl(280, 30%, 60%);
+    }
+
+    /* Action buttons */
+    .demo-widget .w-action {
+      padding: 0.3rem 0.4rem;
+      border-radius: 0.6rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 300ms cubic-bezier(0.175,0.885,0.32,1.275);
+      border: 1px solid transparent;
+      background: none;
+      margin-left: 0.15rem;
+    }
+    .demo-widget .w-del {
+      background: hsla(0,70%,60%,0.1);
+      color: hsl(0,100%,60%);
+      border-color: hsla(0,70%,60%,0.2);
+    }
+    .demo-widget .w-del:hover {
+      background: hsl(0,100%,60%);
+      color: white;
+      transform: scale(1.1);
+    }
+    .demo-widget .w-search {
+      background: hsla(200,80%,55%,0.1);
+      color: hsl(190, 80%, 60%);
+      border-color: hsla(200,80%,55%,0.2);
+    }
+    .demo-widget .w-search:hover {
+      background: hsl(190, 80%, 60%);
+      color: hsl(280, 50%, 10%);
+      transform: scale(1.1);
+    }
+
+    /* Empty state */
+    .demo-widget .w-empty td {
+      padding: 2rem 1rem;
+      text-align: center;
+      color: hsl(280, 30%, 60%);
+    }
+    .demo-widget .w-empty .w-empty-icon {
+      font-size: 2rem;
+      display: block;
+      margin-bottom: 0.5rem;
+      opacity: 0.5;
+    }
+    .demo-widget .w-empty .w-empty-hint {
+      font-size: 0.78rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Fade in for new rows */
+    .demo-widget .w-fade { animation: w-fadein 0.4s ease; }
+    @keyframes w-fadein { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ── "Open full app" bar at bottom ────────────────────────── */
+    .demo-widget .w-footer {
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid hsla(320,100%,50%,0.2);
+      text-align: center;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.75rem;
+      color: hsl(280, 30%, 60%);
+    }
+    .demo-widget .w-footer a {
+      color: hsl(190, 80%, 60%);
+      text-decoration: none;
+      border-bottom: 1px solid hsla(190,80%,60%,0.4);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .demo-widget .w-footer a:hover {
+      color: hsl(60, 100%, 95%);
+      border-color: hsl(60, 100%, 95%);
+    }
+
+    /* ── Portfolio page text ──────────────────────────────────── */
+    .page-section p {
+      max-width: 65ch;
+      margin: 0 auto 1rem;
+      line-height: 1.8;
+    }
+
+    /* Allow this page's section to be wider to accommodate the widget */
+    #estimator {
+      max-width: 1200px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- navigation -->
+  <div class="nav-wrapper">
+    <nav class="nav-inner" aria-label="Main navigation">
+      <a href="index.html" class="nav-logo">Olivia Balas</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="index.html#portfolio" class="active">Portfolio</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <a href="index.html#contact" class="nav-cta">Get in Touch!</a>
+      <button class="nav-hamburger" aria-label="Open menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+    <div class="nav-mobile" id="mobileMenu">
+      <ul>
+        <li><a href="index.html"           onclick="toggleMenu()">Home</a></li>
+        <li><a href="about.html"           onclick="toggleMenu()">About</a></li>
+        <li><a href="index.html#portfolio" onclick="toggleMenu()">Portfolio</a></li>
+        <li><a href="index.html#contact"   onclick="toggleMenu()">Contact</a></li>
+      </ul>
+      <a href="index.html#contact" class="nav-cta" onclick="toggleMenu()">Get in Touch!</a>
+    </div>
+  </div>
+
+  <!-- page content -->
+  <section class="page-section" id="estimator">
+    <a href="index.html#portfolio" class="back-link">Back to Portfolio</a>
+
+    <h1>Item Price Estimator</h1>
+
+    <div class="page-divider"><span>✦</span></div>
+
+    <p>The Item Price Estimator is my first app and my first experiment with vibe-coding. The majority of it
+    was coded with the Antigravity App, though I went through the code myself to make the changes needed
+    for the app to function properly. While there are understandable concerns about AI replacing peoples'
+    jobs, I don't think coders will have to worry — the process of building the app was faster, but it took
+    the same amount of time to debug everything!</p>
+
+    <p>The function of the app is very simple. Using your device's camera, you take a picture of an object.
+    The app then uses <em>retrieval augmented generation</em> (RAG) to retrieve search results containing the same
+    (or a similar) object; it uses those search results to estimate the price of the object based on its
+    quality. Add a funky psychedelic theme, and the result is a handy, stylish little gadget that makes pricing
+    your items much easier!</p>
+
+    <p>Whether you're organizing a garage sale, getting rid of old furniture, or just curious, the Item
+    Estimator provides a simple way to help you out.</p>
+
+    <div class="page-divider"><span>✦</span></div>
+
+    <!-- Demo widget -->
+    <div class="demo-widget">
+      <div class="w-bg"></div>
+      <div class="w-inner">
+
+        <h2 class="w-title">📸 Item Price Estimator</h2>
+        <p class="w-subtitle">Capture items and get instant price estimates</p>
+
+        <div class="w-grid">
+
+          <!-- Camera column -->
+          <div class="w-card">
+            <div class="w-camera-box">
+              <video id="w-video" autoplay playsinline></video>
+              <canvas id="w-canvas" style="display:none"></canvas>
+              <div class="w-status">
+                <div class="w-dot" id="w-dot"></div>
+                <span id="w-status-text">Initializing camera…</span>
+              </div>
+            </div>
+            <div class="w-controls">
+              <button class="w-btn w-btn-capture" id="w-capture" disabled onclick="wCapture()">
+                📷 Capture Item
+              </button>
+              <button class="w-btn w-btn-clear" onclick="wClearAll()">
+                🗑️ Clear All
+              </button>
+            </div>
+          </div>
+
+          <!-- Results column -->
+          <div class="w-card">
+            <div class="w-results-header">
+              <div class="w-results-title">🍄 Captured Items</div>
+              <span class="w-count" id="w-count">0 items</span>
+            </div>
+            <div class="w-table-wrap">
+              <table class="w-table">
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Item #</th>
+                    <th>Name</th>
+                    <th>Wear</th>
+                    <th>Description</th>
+                    <th>Est. Price</th>
+                    <th>Captured At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="w-tbody">
+                  <tr class="w-empty">
+                    <td colspan="8">
+                      <span class="w-empty-icon">📦</span>
+                      <p>No items captured yet</p>
+                      <p class="w-empty-hint">Click "Capture Item" to get started</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div><!-- /w-grid -->
+
+        <div class="w-footer">
+          This is a live demo — items are not saved.
+          For the full experience, <a href="https://item-price-estimator-lt6vry4gra-uc.a.run.app/" target="_blank" rel="noopener noreferrer">open the real app ↗</a>
+        </div>
+
+      </div><!-- /w-inner -->
+    </div><!-- /demo-widget -->
+  </section>
+
+  <script>
+       // ── Portfolio nav ───────────────────────────────────────────
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    // ── Widget state (no localStorage — demo only) ──────────────
+    let wStream  = null;
+    let wModel   = null;
+    let wItems   = [];   // session-only, never persisted
+    let wNextId  = 1;
+
+    const wVideo   = document.getElementById('w-video');
+    const wCanvas  = document.getElementById('w-canvas');
+    const wCapBtn  = document.getElementById('w-capture');
+    const wDot     = document.getElementById('w-dot');
+    const wStatus  = document.getElementById('w-status-text');
+    const wTbody   = document.getElementById('w-tbody');
+    const wCountEl = document.getElementById('w-count');
+
+    // ── Camera init ─────────────────────────────────────────────
+    (async function initCamera() {
+      try {
+        wDot.className = 'w-dot loading';
+        wStatus.textContent = 'Initializing camera…';
+
+        wStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false
+        });
+
+        wVideo.srcObject = wStream;
+        await new Promise(r => wVideo.onloadedmetadata = r);
+
+        wDot.className    = 'w-dot active';
+        wStatus.textContent = 'Camera ready';
+        wCapBtn.disabled  = false;
+
+      } catch (err) {
+        wDot.className = 'w-dot';
+        if (err.name === 'NotAllowedError')  wStatus.textContent = 'Camera access denied';
+        else if (err.name === 'NotFoundError') wStatus.textContent = 'No camera found';
+        else wStatus.textContent = 'Camera unavailable';
+      }
+    })();
+
+    // ── Flash effect ────────────────────────────────────────────
+    function wFlash() {
+      const f = document.createElement('div');
+      Object.assign(f.style, {
+        position:'absolute', inset:'0', background:'white',
+        opacity:'0', pointerEvents:'none',
+        transition:'opacity 0.3s ease', zIndex:'5'
+      });
+      document.querySelector('.w-camera-box').appendChild(f);
+      setTimeout(() => {
+        f.style.opacity = '0.8';
+        setTimeout(() => { f.style.opacity = '0'; setTimeout(() => f.remove(), 300); }, 100);
+      }, 10);
+    }
+
+    // ── Capture ─────────────────────────────────────────────────
+    async function wCapture() {
+      if (!wStream) return;
+
+      wCapBtn.disabled = true;
+      wFlash();
+
+      // Snapshot
+      wCanvas.width  = wVideo.videoWidth;
+      wCanvas.height = wVideo.videoHeight;
+      wCanvas.getContext('2d').drawImage(wVideo, 0, 0);
+      const imageData = wCanvas.toDataURL('image/jpeg', 0.9);
+
+      // New item in "searching" state
+      const item = {
+        id: wNextId++,
+        image: imageData,
+        name: 'Analyzing…',
+        wear: 'Good',
+        description: 'Analyzing item…',
+        price: null,
+        timestamp: new Date(),
+        groundingStatus: 'searching'
+      };
+      wItems.push(item);
+      wRender();
+      wCapBtn.disabled = false;
+
+      // 1) MobileNet classification
+      try {
+        if (!wModel) {
+          wModel = await mobilenet.load();
+        }
+        const preds = await wModel.classify(wVideo);
+        if (preds && preds.length > 0) item.name = preds[0].className;
+        else item.name = 'Unknown Item';
+      } catch (e) {
+        item.name = 'Unknown Item';
+      }
+      wRender();
+
+      // 2) Gemini grounding — calls the SAME /api/grounding endpoint as the real app
+      await wGround(item);
+    }
+
+    // ── Grounding (mirrors performGrounding in app.js exactly) ──
+    async function wGround(item) {
+      try {
+        const base64Image = item.image.split(',')[1];
+        const prompt = `Identify this item. Assess its condition (wear) as '${item.wear}'. Search for the current market price of this specific item in this condition. Return a JSON object with fields: 'name', 'description', 'price' (number only). Ensure the description mentions the price source if available.`;
+
+        const response = await fetch('/api/grounding', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: prompt },
+                { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
+              ]
+            }],
+            tools: [{ google_search: {} }]
+          })
+        });
+
+        if (!response.ok) {
+          const err = await response.text();
+          throw new Error(`API Error (${response.status}): ${err.substring(0, 100)}`);
+        }
+
+        const data = await response.json();
+        const text = data.candidates[0].content.parts[0].text;
+        const match = text.match(/\{[\s\S]*\}/);
+        if (match) {
+          const result = JSON.parse(match[0]);
+          item.name        = result.name        || item.name;
+          item.description = result.description || item.description;
+          item.price       = result.price       || item.price;
+        } else {
+          throw new Error('Could not parse JSON from response');
+        }
+
+      } catch (err) {
+        console.error('Grounding error:', err);
+        item.description = `Error: ${err.message}`;
+        // Same fallback pricing as the real app
+        const basePrice      = wBasePrice(item.name);
+        const wearMultiplier = wWearMult(item.wear);
+        item.price = (basePrice * wearMultiplier).toFixed(2);
+      }
+
+      item.groundingStatus = 'done';
+      wRender();
+    }
+
+    // Mirrors getBasePrice / getWearMultiplier from app.js
+    function wBasePrice(name) {
+      const n = name.toLowerCase();
+      if (n.includes('phone') || n.includes('computer') || n.includes('laptop')) return 500;
+      if (n.includes('chair') || n.includes('table') || n.includes('sofa'))      return 150;
+      if (n.includes('bottle') || n.includes('cup'))                              return 15;
+      return Math.random() * 50 + 10;
+    }
+    function wWearMult(wear) {
+      return { 'New':1.0, 'Like New':0.9, 'Good':0.7, 'Fair':0.5, 'Poor':0.3 }[wear] || 0.7;
+    }
+
+    // ── Render table ────────────────────────────────────────────
+    function wRender() {
+      wTbody.innerHTML = '';
+
+      if (wItems.length === 0) {
+        wTbody.innerHTML = `
+          <tr class="w-empty">
+            <td colspan="8">
+              <span class="w-empty-icon">📦</span>
+              <p>No items captured yet</p>
+              <p class="w-empty-hint">Click "Capture Item" to get started</p>
+            </td>
+          </tr>`;
+        wCountEl.textContent = '0 items';
+        return;
+      }
+
+      const conditions = ['New','Like New','Good','Fair','Poor'];
+      const reversed   = [...wItems].reverse();
+
+      reversed.forEach(item => {
+        const wearClass = item.wear.toLowerCase().replace(' ', '-');
+        const timeStr   = wFormatTime(item.timestamp);
+
+        const priceCell = item.groundingStatus === 'searching'
+          ? `<div class="w-spinner-row"><div class="w-spinner"></div> Grounding…</div>`
+          : `<span class="w-price">$${item.price}</span>`;
+
+        const tr = document.createElement('tr');
+        tr.className = 'w-fade';
+        tr.id = `wrow-${item.id}`;
+        tr.innerHTML = `
+          <td><img src="${item.image}" class="w-thumb" alt="${item.name}"></td>
+          <td><strong>#${item.id}</strong></td>
+          <td>${item.name}</td>
+          <td>
+            <div class="w-wear-wrap ${wearClass}">
+              <select class="w-wear ${wearClass}" onchange="wUpdateWear(${item.id}, this)">
+                ${conditions.map(c => `<option value="${c}" ${item.wear===c?'selected':''}>${c}</option>`).join('')}
+              </select>
+            </div>
+          </td>
+          <td style="max-width:200px;white-space:normal;line-height:1.4">${item.description}</td>
+          <td>${priceCell}</td>
+          <td class="w-ts">${timeStr}</td>
+          <td>
+            <button class="w-action w-search" title="Verify on Google"
+              onclick="window.open('https://www.google.com/search?q=price+of+${item.wear}+condition+${encodeURIComponent(item.name)}','_blank')">🔍</button>
+            <button class="w-action w-del" title="Delete" onclick="wDelete(${item.id})">🗑️</button>
+          </td>`;
+        wTbody.appendChild(tr);
+      });
+
+      const n = wItems.length;
+      wCountEl.textContent = `${n} item${n !== 1 ? 's' : ''}`;
+    }
+
+    // ── Wear update — re-grounds like the real app ──────────────
+    function wUpdateWear(id, sel) {
+      const item = wItems.find(i => i.id === id);
+      if (!item) return;
+      item.wear = sel.value;
+      item.groundingStatus = 'searching';
+      item.price = null;
+      wRender();
+      wGround(item);
+    }
+
+    // ── Delete & clear ──────────────────────────────────────────
+    function wDelete(id) {
+      wItems = wItems.filter(i => i.id !== id);
+      wRender();
+    }
+
+    function wClearAll() {
+      if (wItems.length === 0) return;
+      if (confirm(`Delete all ${wItems.length} item${wItems.length !== 1 ? 's' : ''}?`)) {
+        wItems = [];
+        wRender();
+      }
+    }
+
+    // ── Timestamp formatter (same logic as app.js) ──────────────
+    function wFormatTime(date) {
+      const now  = new Date();
+      const diff = now - date;
+      if (diff < 60000)   return 'Just now';
+      if (diff < 3600000) return `${Math.floor(diff/60000)} min${Math.floor(diff/60000)!==1?'s':''} ago`;
+      if (date.toDateString() === now.toDateString())
+        return date.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit', hour12:true });
+      return date.toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+    }
+
+    // ── Stop camera on page leave ───────────────────────────────
+    window.addEventListener('beforeunload', () => {
+      if (wStream) wStream.getTracks().forEach(t => t.stop());
+    });
+  </script>
+
+</body>
 </html>

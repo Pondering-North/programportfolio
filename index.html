@@ -151,8 +151,6 @@
 
   <!--body-->
   <body>
-
-    <!--ripple overlay-->
     <div id="ripple-overlay"></div>
 
     <!--splash screen-->
@@ -176,7 +174,7 @@
           <li><a href="#home" class="active">Home</a></li>
           <li><a href="#about">About</a></li>
           <li><a href="#portfolio">Portfolio</a></li>
-          <li><a href="#apps">Contact</a></li>
+          <li><a href="#contact">Contact</a></li>
         </ul>
 
         <a href="#contact" class="nav-cta">Get in Touch!</a>
@@ -209,17 +207,15 @@
     <section class="page-section" id="about">
       <h2>About Me</h2>
       <p>This is where I explain my <strong>expertise</strong> and <em>experience</em> with coding and AI.</p>
-      <p><a href="./about.html">Learn More</a></p>
+      <a href="about.html" class="page-link">Learn more</a>
     </section>
 
 <!--section break-->
     <section class="page-section" id="portfolio">
       <h2>Portfolio</h2>
-      <p>This is where I put my work. Or a <strong>link</strong> to all the things I've done.</p>
 
       <h4>Item Price Estimator</h4>
-      <p><a href="../programportfolio/item-price-estimator.html">An app designed to take pictures
-        of objects and calculate their price based on real-time grounding.</a></p>
+      <p><a href="../programportfolio/item-price-estimator.html" class="page-link">Learn more</a></p>
       <h4>App 2</h4>
       <p>Work in progress.</p>
       <h4>App 3</h4>
@@ -255,11 +251,23 @@
           splash.remove();
           ripple.remove();
           document.body.style.overflow = '';
+          sessionStorage.setItem('splashSeen', 'true');
         }, { once: true });
       }
 
-      //--Block scroll until splash is dismissed--
-      document.body.style.overflow = 'hidden';
+      //--Skip this if we've already seen the splash this session--
+      (function() {
+        const splash = document.getElementById('splash');
+        const ripple = document.getElementById('ripple-overlay');
+      
+        if (sessionStorage.getItem('splashSeen')) { //--Already saw the splash - don't run the animation again--
+          splash.remove();
+          ripple.remove();
+          document.body.style.overflow = '';
+        } else { //--First visit: run the splash--
+          document.body.style.overflow = 'hidden';
+        }
+      })();
 
       //--Mobile menu toggle--
       function toggleMenu() {
@@ -280,7 +288,6 @@
         });
       }, { threshold: 0.5 });
       sections.forEach(s => observer.observe(s));
-      
     </script>
 
   </body>
