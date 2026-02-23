@@ -82,6 +82,7 @@
 
   <!-- BugCal embed bundle — built from src/embed.jsx via `npm run build:lib` -->
   <!-- Copy dist-embed/bugcal.embed.js into the same folder as this file      -->
+  <script>window.process = { env: { NODE_ENV: "production" } };</script>
   <script src="bugcal.embed.js"></script>
 
   <script>
@@ -89,6 +90,6 @@
       document.getElementById('mobileMenu').classList.toggle('open');
     }
   </script>
-
+  
 </body>
 </html>
