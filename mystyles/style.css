@@ -17,9 +17,9 @@
   --gold-light:  #e8d08a;
   --gold-pale:   #f5e9c4;
   --gold-dark:   #8a6820;
-  --text-dark:   #1e0f18;
-  --text-mid:    #4a2438;
-  --text-soft:   #6b3d52;
+  --text-dark:   #2e1420;
+  --text-mid:    #5a2d42;
+  --text-soft:   #7a4560;
   --white-glass: rgba(255,255,255,0.55);
   --nav-height:  72px;
 }
@@ -295,6 +295,39 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ── Accessibility: focus styles ────────────────────────────── */
+/* Visible focus ring for keyboard navigation (Tab key)         */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Remove focus ring for mouse users (keeps it clean visually)  */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Skip-to-content link for screen readers / keyboard users     */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  z-index: 9999;
+  padding: 0.6rem 1.2rem;
+  background: var(--gold);
+  color: var(--text-dark);
+  font-family: 'Jost', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: top 0.2s;
+}
+.skip-link:focus {
+  top: 1rem;
+}
+
 /* ── Page layout helpers ────────────────────────────────────── */
 
 .page-hero {
@@ -319,10 +352,10 @@ body {
 
 .page-hero p {
   font-family: 'Jost', sans-serif;
-  font-weight: 200;
+  font-weight: 300;
   font-size: 1rem;
   letter-spacing: 0.12em;
-  color: var(--text-soft);
+  color: var(--text-mid);
   max-width: 44ch;
 }
 
@@ -331,9 +364,9 @@ body {
   max-width: 900px;
   margin: 0 auto;
   text-align: center;
-  color: var(--text-soft);
+  color: var(--text-mid);
   font-family: 'Jost', sans-serif;
-  font-weight: 200;
+  font-weight: 300;
   letter-spacing: 0.08em;
 }
 
@@ -376,10 +409,10 @@ body {
 
 .page-section p {
   font-family: 'Jost', sans-serif;
-  font-weight: 200;
+  font-weight: 300;
   font-size: 0.98rem;
   line-height: 1.8;
-  color: var(--text-soft);
+  color: var(--text-mid);
   max-width: 65ch;
   margin: 0 auto 1rem;
 }
@@ -424,9 +457,7 @@ body {
   font-size: 0.75rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--text-soft);
-  text-decoration: none;
-  margin-bottom: 2.5rem;
+  color: var(--text-mid);
   transition: color 0.25s;
 }
 .back-link::before {
