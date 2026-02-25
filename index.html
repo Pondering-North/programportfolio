@@ -14,7 +14,7 @@
     <!--style, sitewide (navigation, variables, layout)-->
     <link rel="stylesheet" href="mystyles/style.css">
 
-    <!--style, splashscreen-->
+    <!--style, splashscreen with bug dot art-->
     <style>
       #splash {
         position: fixed;
@@ -70,98 +70,251 @@
         align-items: center;
         gap: 2rem;
         padding: 3rem;
-        animation: splashFadeIn 1.2s cubic-bezier(0.4,0,0.2,1) both;
-      }
-      @keyframes splashFadeIn {
-        from { opacity: 0; transform: translateY(16px); }
-        to   { opacity: 1; transform: translateY(0); }
       }
 
-      /* splash message */
-      .splash-message {
-        font-family: 'Cormorant Garamond', serif;
-        font-weight: 300;
-        font-style: italic;
-        font-size: clamp(1.6rem, 4vw, 3rem);
-        letter-spacing: 0.06em;
-        line-height: 1.5;
-        max-width: 28ch;
-        background: linear-gradient(120deg, #8a6820 0%, #c9a84c 40%, #8a6820 70%, #c9a84c 100%);
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        animation: goldShimmer 4s linear infinite;
-      }
-      @keyframes goldShimmer {
-        from { background-position: 0% center;}
-        to   { background-position: 200% center; }
+      /* Bug dot art container */
+      #bug-art {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        animation: bugFadeIn 1.2s cubic-bezier(0.4,0,0.2,1) both;
       }
 
-      .splash-hint {
-        font-family: 'Jost', sans-serif;
-        font-weight: 200;
-        font-size: 0.72rem;
-        letter-spacing: 0.28em;
-        text-transform: uppercase;
-        color: #a06080;
+      @keyframes bugFadeIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to   { opacity: 1; transform: scale(1); }
+      }
+
+      .dot {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #c14770;
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+      }
+
+      .dot:hover {
+        background: #ff6b9d;
+        box-shadow: 
+          0 0 15px rgba(255, 107, 157, 1),
+          0 0 30px rgba(255, 107, 157, 0.8),
+          0 0 45px rgba(255, 107, 157, 0.6),
+          0 0 60px rgba(255, 107, 157, 0.4);
+        transform: scale(1.5);
+      }
+
+      #bug-art:hover .dot {
+        background: #e5537a;
+        animation: dotPulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes dotPulse {
+        0%, 100% {
+          box-shadow: 0 0 8px rgba(255, 107, 157, 0.7);
+        }
+        50% {
+          box-shadow: 
+            0 0 15px rgba(255, 107, 157, 1),
+            0 0 25px rgba(255, 107, 157, 0.8),
+            0 0 35px rgba(255, 107, 157, 0.6);
+        }
+      }
+
+      /* Binary digit styling */
+      .binary {
+        position: absolute;
+        font-family: 'Courier New', monospace;
+        font-size: 14px;
+        font-weight: bold;
+        color: #c14770;
         opacity: 0;
-        animation: splashFadeIn 1s 1.4s both;
+        pointer-events: none;
       }
 
-      .splash-ornament {
+      /* Dissolve animations */
+      @keyframes dissolveToBinary {
+        0% {
+          opacity: 1;
+          transform: translate(0, 0) scale(1);
+        }
+        50% {
+          opacity: 0.5;
+          transform: translate(var(--tx), var(--ty)) scale(0.5);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(var(--tx), var(--ty)) scale(0);
+        }
+      }
+
+      @keyframes binaryAppear {
+        0% {
+          opacity: 0;
+          transform: scale(0.5);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(1) translateY(20px);
+        }
+      }
+
+      /* Portfolio Carousel Styles */
+      .portfolio-carousel {
+        position: relative;
+        max-width: 900px;
+        margin: 3rem auto;
+        overflow: hidden;
+      }
+
+      .carousel-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 60%;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(201, 168, 76, 0.2);
+      }
+
+      .carousel-track {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .carousel-slide {
+        min-width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .carousel-slide:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .carousel-image {
+        max-width: 80%;
+        max-height: 60%;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        object-fit: contain;
+      }
+
+      .carousel-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.8rem;
+        font-weight: 400;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+      }
+
+      .carousel-description {
+        font-family: 'Jost', sans-serif;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--text-mid);
+        max-width: 600px;
+        text-align: center;
+      }
+
+      .carousel-controls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .carousel-button {
+        background: linear-gradient(135deg, rgba(245,233,196,0.55), rgba(232,208,138,0.18));
+        border: 1px solid var(--gold);
+        color: var(--gold-dark);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.2rem;
         display: flex;
         align-items: center;
-        gap: 0.8rem;
-        opacity: 0;
-        animation: splashFadeIn 1s 0.8s both;
-      }
-      .splash-ornament::before,
-      .splash-ornament::after {
-        content: '';
-        display: block;
-        width: 60px;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #c9a84c, transparent);
-      }
-      .splash-ornament span {
-        color: #c9a84c;
-        font-size: 0.7rem;
-        opacity: 0.8;
+        justify-content: center;
+        transition: all 0.3s;
       }
 
-      /* ripple overlay */
-      #ripple-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 10000;
-        pointer-events: none;
-        background: #fdf0f4;
-        clip-path: circle(0% at 50% 50%);
+      .carousel-button:hover {
+        background: linear-gradient(135deg, var(--gold-light), var(--gold-pale));
+        box-shadow: 0 4px 16px rgba(201,168,76,0.3);
+        transform: scale(1.05);
       }
-      #ripple-overlay.expanding {
-        animation: rippleExpand 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+      .carousel-button:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
       }
-      @keyframes rippleExpand {
-        from { clip-path: var(--ripple-from); }
-        to   { clip-path: var(--ripple-to);   }
+
+      .carousel-indicators {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .carousel-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(201, 168, 76, 0.3);
+        border: 1px solid var(--gold);
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .carousel-indicator.active {
+        background: var(--gold);
+        transform: scale(1.3);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .carousel-image {
+          max-width: 90%;
+          max-height: 50%;
+        }
+
+        .carousel-title {
+          font-size: 1.4rem;
+        }
+
+        .carousel-description {
+          font-size: 0.85rem;
+        }
       }
     </style>
   </head>
 
   <!--body-->
   <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-    <div id="ripple-overlay"></div>
+    <a href="#home" class="skip-link">Skip to main content</a>
 
-    <!--splash screen-->
+    <!--splash screen with bug dot art-->
     <div id="splash" onclick="triggerSplashExit(event)" role="button" aria-label="Enter site">
       <div class="splash-content">
-         <div class="splash-ornament"><span>✦</span></div>
-          <p class="splash-message">Welcome.</p>
-
-          <div class="splash-ornament"><span>✦</span></div>
-          <span class="splash-hint">𓆣</span>
+        <div id="bug-art"></div>
       </div>
     </div>
 
@@ -169,7 +322,7 @@
     <div class="nav-wrapper">
       <nav class="nav-inner" aria-label="Main navigation">
 
-        <a href="#" class="nav-logo">Olivia Balas</a>
+        <a href="#home" class="nav-logo">Olivia Balas</a>
 
         <ul class="nav-links">
           <li><a href="#home" class="active">Home</a></li>
@@ -207,79 +360,208 @@
 
     <section class="page-section" id="about">
       <h2>About Me</h2>
-      <p>Entomology enthusiast, bioinformatics programmer, and AI engineer.</p>
-      <a href="about.html" class="page-link">Learn more</a>
+
+      <div class="page-divider"><span>✦</span></div>
+
+      <p>As a recent college graduate and new professional, my interests combine both the natural world and the 
+      identification of patterns and solutions, using artificial intelligence and other tools to model and better 
+      understand that world. I'm specifically focused on the interdependencies of bioinformatics, genetics, and 
+      entomology.
+      </p>
+
+      <p>As of now, the projects I've built have been focused on making everyday tasks easier; my goal is to 
+      create projects that tackle the issues surrounding insect conservation, genetic analysis, and 
+      parasite ecology.
+      </p>
+
+      <h3>What I Do</h3>
+      <p>I've worked with multiple coding languages, and my experience has helped me adapt for each
+      project's different requirements. These include:
+      </p>
+      <ul style="text-align: left; max-width: 400px; margin: 1rem auto; line-height: 1.8;">
+        <li>Python</li>
+        <li>Pytorch</li>
+        <li>Pandas</li>
+        <li>SQL</li>
+        <li>Protege</li>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>RStudio</li>
+      </ul>
+
+      <p>The AI programs I've had the most experience with are Antigravity, Google AI Studio, Google Gemini, and 
+      Claude AI. I also use many of Microsoft Azure's tools to create and train machine learning models, plan and 
+      manage AI solutions, and implement said solutions. This includes extensive work with running these apps on Google 
+      Cloud Run, creating Dockers, and performing jobs and services.
+      </p>
     </section>
 
-<!--section break-->
     <section class="page-section" id="portfolio">
       <h2>Portfolio</h2>
 
-      <h4>Item Price Estimator</h4>
-      <p><a href="item-price-estimator.html" class="page-link">Learn more</a></p>
-      <h4>BugCal</h4>
-      <p><a href="bugcal.html" class="page-link">Learn more</a></p>
-      <h4>App 3</h4>
-      <p>Work in progress.</p>
+      <div class="portfolio-carousel">
+        <div class="carousel-container">
+          <div class="carousel-track" id="carouselTrack">
+            
+            <!-- Slide 1: Item Price Estimator -->
+            <a href="item-price-estimator.html" class="carousel-slide">
+              <div style="width: 100%; height: 60%; display: flex; align-items: center; justify-content: center; background: rgba(201,168,76,0.1); border-radius: 8px; margin-bottom: 1.5rem;">
+                <div style="font-size: 4rem; color: var(--gold);">📊</div>
+              </div>
+              <h3 class="carousel-title">Item Price Estimator</h3>
+              <p class="carousel-description">A tool designed to help estimate prices for various items with intelligent suggestions and data analysis.</p>
+            </a>
+
+            <!-- Slide 2: BugCal -->
+            <a href="bugcal.html" class="carousel-slide">
+              <div style="width: 100%; height: 60%; display: flex; align-items: center; justify-content: center; background: rgba(201,168,76,0.1); border-radius: 8px; margin-bottom: 1.5rem;">
+                <div style="font-size: 4rem; color: var(--gold);">🐛📅</div>
+              </div>
+              <h3 class="carousel-title">BugCal</h3>
+              <p class="carousel-description">A simple calendar app that I created to test Claude AI's creation and implementation of multiple AI agents. BugCal uses these agents to parse natural language event descriptions, detect scheduling conflicts, and verify US federal holidays via live web search. You can add events and specify which days or times they're on, how often they reoccur, and even what color and bug-themed icons they have.</p>
+            </a>
+
+            <!-- Slide 3: App 3 -->
+            <div class="carousel-slide" style="pointer-events: none; opacity: 0.6;">
+              <div style="width: 100%; height: 60%; display: flex; align-items: center; justify-content: center; background: rgba(201,168,76,0.1); border-radius: 8px; margin-bottom: 1.5rem;">
+                <div style="font-size: 4rem; color: var(--gold);">🔧</div>
+              </div>
+              <h3 class="carousel-title">App 3</h3>
+              <p class="carousel-description">Work in progress.</p>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="carousel-controls">
+          <button class="carousel-button" id="prevBtn" onclick="changeSlide(-1)">‹</button>
+          <div class="carousel-indicators" id="indicators"></div>
+          <button class="carousel-button" id="nextBtn" onclick="changeSlide(1)">›</button>
+        </div>
+      </div>
     </section>
 
     <section class="page-section" id="contact">
       <h2>Get in Touch</h2>
       <p>Feel free to reach out with any questions or requests.</p>
       <p>(720)-232-5930</p>
-      <p>olba4524@colorado.edu</p>
+
     </section>
 
     <!--scripts-->
     <script>
-      // -- splash ripple text --
-      function triggerSplashExit(e) {
-        const splash = document.getElementById('splash');
-        const ripple = document.getElementById('ripple-overlay');
+      // Bug dot art pattern - creates a beetle shape
+      const bugPattern = [
+        // Antennae
+        [3, 1], [2, 2], [1, 3],
+        [7, 1], [8, 2], [9, 3],
+        // Head
+        [4, 3], [5, 3], [6, 3],
+        [3, 4], [4, 4], [5, 4], [6, 4], [7, 4],
+        // Body
+        [2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5], [8, 5],
+        [2, 6], [3, 6], [4, 6], [5, 6], [6, 6], [7, 6], [8, 6],
+        [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7],
+        [2, 8], [3, 8], [4, 8], [5, 8], [6, 8], [7, 8], [8, 8],
+        [3, 9], [4, 9], [5, 9], [6, 9], [7, 9],
+        // Legs
+        [1, 6], [0, 7],
+        [9, 6], [10, 7],
+        [1, 8], [0, 9],
+        [9, 8], [10, 9],
+        [2, 10], [1, 11],
+        [8, 10], [9, 11]
+      ];
 
-        splash.style.pointerEvents = 'none';
-
-        const x = e ? e.clientX : window.innerWidth  / 2;
-        const y = e ? e.clientY : window.innerHeight / 2;
-        const radius = Math.ceil(Math.hypot(
-          Math.max(x, window.innerWidth  - x),
-          Math.max(y, window.innerHeight - y)
-        ));
-
-        ripple.style.setProperty('--ripple-from', `circle(0px at ${x}px ${y}px)`);
-        ripple.style.setProperty('--ripple-to',   `circle(${radius}px at ${x}px ${y}px)`);
-        ripple.classList.add('expanding');
-
-        ripple.addEventListener('animationend', () => {
-          splash.remove();
-          ripple.remove();
-          document.body.style.overflow = '';
-          sessionStorage.setItem('splashSeen', 'true');
-        }, { once: true });
+      // Create bug dot art
+      function createBugArt() {
+        const container = document.getElementById('bug-art');
+        const cellSize = 25;
+        
+        bugPattern.forEach(([x, y], index) => {
+          const dot = document.createElement('div');
+          dot.className = 'dot';
+          dot.style.left = (x * cellSize + 20) + 'px';
+          dot.style.top = (y * cellSize + 20) + 'px';
+          dot.dataset.index = index;
+          container.appendChild(dot);
+        });
       }
 
-      //--Skip this if we've already seen the splash this session--
+      // Dissolve bug into binary
+      function dissolveBug() {
+        const dots = document.querySelectorAll('.dot');
+        const container = document.getElementById('bug-art');
+        
+        dots.forEach((dot, index) => {
+          setTimeout(() => {
+            // Random direction for dissolution
+            const angle = Math.random() * Math.PI * 2;
+            const distance = 100 + Math.random() * 200;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+            
+            dot.style.setProperty('--tx', tx + 'px');
+            dot.style.setProperty('--ty', ty + 'px');
+            dot.style.animation = 'dissolveToBinary 0.8s forwards';
+            
+            // Create binary digit
+            setTimeout(() => {
+              const binary = document.createElement('div');
+              binary.className = 'binary';
+              binary.textContent = Math.random() > 0.5 ? '1' : '0';
+              binary.style.left = dot.style.left;
+              binary.style.top = dot.style.top;
+              binary.style.animation = 'binaryAppear 1.5s forwards';
+              container.appendChild(binary);
+            }, 400);
+          }, index * 30);
+        });
+      }
+
+      // Trigger splash exit
+      function triggerSplashExit(e) {
+        const splash = document.getElementById('splash');
+        
+        splash.style.pointerEvents = 'none';
+        
+        // Start bug dissolution
+        dissolveBug();
+        
+        // Fade out splash after animation
+        setTimeout(() => {
+          splash.style.opacity = '0';
+          splash.style.transition = 'opacity 0.8s';
+          
+          setTimeout(() => {
+            splash.remove();
+            document.body.style.overflow = '';
+            sessionStorage.setItem('splashSeen', 'true');
+          }, 800);
+        }, 2000);
+      }
+
+      // Skip splash if already seen
       (function() {
         const splash = document.getElementById('splash');
-        const ripple = document.getElementById('ripple-overlay');
       
-        if (sessionStorage.getItem('splashSeen')) { //--Already saw the splash - don't run the animation again--
+        if (sessionStorage.getItem('splashSeen')) {
           splash.remove();
-          ripple.remove();
           document.body.style.overflow = '';
-        } else { //--First visit: run the splash--
+        } else {
           document.body.style.overflow = 'hidden';
+          createBugArt();
         }
       })();
 
-      //--Mobile menu toggle--
+      // Mobile menu toggle
       function toggleMenu() {
         document.getElementById('mobileMenu').classList.toggle('open');
       }
 
-      //--Nav link on scroll
+      // Nav link on scroll
       const sections = document.querySelectorAll('section[id]');
-      const links    = document.querySelectorAll('.nav-links a');
+      const links = document.querySelectorAll('.nav-links a');
 
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
@@ -291,6 +573,62 @@
         });
       }, { threshold: 0.5 });
       sections.forEach(s => observer.observe(s));
+
+      // Carousel functionality
+      let currentSlide = 0;
+      const totalSlides = 3;
+
+      function createIndicators() {
+        const indicatorsContainer = document.getElementById('indicators');
+        for (let i = 0; i < totalSlides; i++) {
+          const indicator = document.createElement('div');
+          indicator.className = 'carousel-indicator';
+          if (i === 0) indicator.classList.add('active');
+          indicator.onclick = () => goToSlide(i);
+          indicatorsContainer.appendChild(indicator);
+        }
+      }
+
+      function updateCarousel() {
+        const track = document.getElementById('carouselTrack');
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        
+        // Update indicators
+        const indicators = document.querySelectorAll('.carousel-indicator');
+        indicators.forEach((indicator, index) => {
+          indicator.classList.toggle('active', index === currentSlide);
+        });
+        
+        // Update button states
+        document.getElementById('prevBtn').disabled = currentSlide === 0;
+        document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+      }
+
+      function changeSlide(direction) {
+        currentSlide += direction;
+        if (currentSlide < 0) currentSlide = 0;
+        if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+        updateCarousel();
+      }
+
+      function goToSlide(index) {
+        currentSlide = index;
+        updateCarousel();
+      }
+
+      // Initialize carousel
+      createIndicators();
+      updateCarousel();
+
+      // Auto-advance carousel (optional)
+      // setInterval(() => {
+      //   if (currentSlide < totalSlides - 1) {
+      //     changeSlide(1);
+      //   } else {
+      //     currentSlide = 0;
+      //     updateCarousel();
+      //   }
+      // }, 5000);
     </script>
 
   </body>
