@@ -17,7 +17,6 @@
       max-width: 1000px;
       border-radius: 1rem;
       overflow: hidden;
-
       isolation: isolate;
     }
 
@@ -25,6 +24,18 @@
       max-width: 65ch;
       margin: 0 auto 1rem;
       line-height: 1.8;
+    }
+
+    .page-section ul {
+      max-width: 65ch;
+      margin: 1rem auto;
+      line-height: 1.8;
+      text-align: left;
+      padding-left: 2rem;
+    }
+
+    .page-section li {
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
@@ -61,30 +72,44 @@
   <section class="page-section" id="bugcal">
     <a href="index.html#portfolio" class="back-link">Back to Portfolio</a>
 
-    <h1>BugCal</h1>
+    <h1>🪲 BugCal</h1>
 
     <div class="page-divider"><span>✦</span></div>
 
-    <p>This is a simple calendar app that I created to test Claude AI's creation and
-    implementation of multiple ai agents. BugCal uses these agents to parse natural 
-    language event descriptions, detect scheduling conflicts, and verify US federal holidays 
+    <p>BugCal is a bug-themed personal calendar that I created to demonstrate Claude AI's ability 
+    to create and implement multiple AI agents working together. The app uses these agents to parse 
+    natural language event descriptions, detect scheduling conflicts, and verify US federal holidays 
     via live web search.</p>
 
-    <p>You can add events and specify which days or times they're on, how often they reoccur, and even 
-    what color and bug-themed icons they have. Events are saved to your browser's local storage so that 
-    you can access them at any time. Day/week/month/agenda views, reminders, search & filtering features,
-    timezone management, and voice command support is planned to be implemented in the future.
-    </p>
+    <h3>Features</h3>
+    <ul>
+      <li><strong>Natural Language Parsing:</strong> Enter events like "standup every Mon/Wed/Fri at 9am" and the AI agent parses the details automatically</li>
+      <li><strong>Recurring Events:</strong> Support for daily, weekly, biweekly, monthly, yearly, or custom weekday patterns</li>
+      <li><strong>Flexible Repeat Endings:</strong> Events can repeat infinitely, until a specific date, or for a set number of occurrences</li>
+      <li><strong>Conflict Detection:</strong> AI agent warns you when new events overlap with existing ones</li>
+      <li><strong>Holiday Verification:</strong> AI agent verifies US federal holiday dates using live web search</li>
+      <li><strong>Persistent Storage:</strong> Events are saved to your browser's local storage and persist across sessions</li>
+      <li><strong>Bug-Themed Icons:</strong> Each event can be customized with adorable bug icons and colors</li>
+    </ul>
+
+    <h3>Planned Features</h3>
+    <p>Future updates will include day/week/month/agenda views, event reminders, search & filtering, 
+    timezone management, and voice command support.</p>
+
+    <div class="page-divider"><span>✦</span></div>
+
+    <h3>Live Demo</h3>
+    <p>Try it out below! Add events, set them to recur, and watch the AI agents detect conflicts 
+    and verify holidays.</p>
 
     <!-- BugCal mounts here -->
     <div id="bugcal-root"></div>
 
   </section>
 
-  <!-- BugCal embed bundle — built from src/embed.jsx via `npm run build:lib` -->
-  <!-- Copy dist-embed/bugcal.embed.js into the same folder as this file      -->
-  <script>window.process = { env: { NODE_ENV: "production" } };</script>
-  <script src="bugcal.embed.js"></script>
+  <!-- BugCal embed bundle -->
+  <!-- Note: Rename your uploaded file to match this exact filename -->
+  <script type="module" src="bugcal_embed.js"></script>
 
   <script>
     function toggleMenu() {
