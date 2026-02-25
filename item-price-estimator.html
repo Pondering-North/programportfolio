@@ -541,15 +541,27 @@
 
     <div class="page-divider"><span>✦</span></div>
 
-    <p>The Item Price estimator was commissioned for personal use. The client's request was to be able to have an easy way to
+    <p>The Item Price Estimator is my first app and my first experiment with vibe-coding. The majority of it
+    was coded with the Antigravity App, and I made manual edits where necessary.</p>
+
+    <p>The app was commissioned for personal use. The client's request was to be able to have an easy way to
     price objects they were planning to sell. Special emphasis was placed on using <em>retrieval augmented generation</em>
     (RAG) to retrieve search results from the internet containing the same (or similar) object in mind, evaluate
     the object's price based on quality, and store the results in a table that would be saved. The app was also supposed
-    to use the camera of the user's device in order to take the picture in the first place. 
+    to use the camera of the user's device in order to take the picture in the first place. And, of course, the 
+    theme had to be fun and psychedelic!
     </p>
 
-    <p>All of this was created through the the Google Antigravity AI-coding tool.
+    <p>This was where I learned the basics and fundamentalss of vibe-coding. Most of my work was focused more on
+    trouble-shooting problems and bugs that rose, tweaking features that didn't fit my vision, and making sure 
+    the app could perform RAG successfully. It was a very good exercise in understanding where my time would
+    be divided during the creation of an app; a test run in how an actual large-scale project might go.
     </p>
+
+    <p>The result is a handy, stylish little gadget that makes pricing your items much easier!</p>
+
+    <p>Whether you're organizing a garage sale, getting rid of old furniture, or just satisfying your curiosity, 
+    the Item Estimator provides a simple way to help you out.</p>
 
     <div class="page-divider"><span>✦</span></div>
 
@@ -773,8 +785,36 @@
 
       } catch (err) {
         console.error('Grounding error:', err);
-        item.description = `Error: ${err.message}`;
-        // Same fallback pricing as the real app
+        
+        // Demo mode: Generate realistic-looking descriptions based on the detected item
+        const itemName = item.name.toLowerCase();
+        const demoDescriptions = {
+          'stole': 'Vintage fabric stole in good condition. Similar items selling for $15-25 on marketplace sites.',
+          'band aid': 'Standard adhesive bandage. Retail price typically $8-15 per box.',
+          'scarf': 'Fashion accessory scarf. Market value ranges $12-30 depending on brand.',
+          'necklace': 'Costume jewelry necklace. Comparable items listed at $18-35.',
+          'tie': 'Necktie in good condition. Similar ties priced at $10-25.',
+          'book': 'Used book in readable condition. Typical resale value $5-20.',
+          'phone': 'Mobile phone. Market value varies greatly by model, typically $200-800.',
+          'laptop': 'Portable computer. Resale value depends on specs, usually $300-1000.',
+          'watch': 'Wristwatch. Value ranges from $25-500 based on brand and condition.',
+          'mug': 'Coffee mug. Standard retail $8-20 depending on design.',
+          'bottle': 'Reusable bottle. Typical market price $12-30.',
+          'sunglasses': 'Eyewear accessory. Price range $15-100 based on brand.'
+        };
+        
+        // Find matching description or use generic
+        let demoDesc = 'Item condition assessed. Market pricing estimated based on similar listings.';
+        for (let key in demoDescriptions) {
+          if (itemName.includes(key)) {
+            demoDesc = demoDescriptions[key];
+            break;
+          }
+        }
+        
+        item.description = `Demo Mode: ${demoDesc} (This is a demonstration - actual API unavailable: ${err.message.substring(0, 50)})`;
+        
+        // Use wear-adjusted base price
         const basePrice      = wBasePrice(item.name);
         const wearMultiplier = wWearMult(item.wear);
         item.price = (basePrice * wearMultiplier).toFixed(2);
@@ -787,10 +827,19 @@
     // Mirrors getBasePrice / getWearMultiplier from app.js
     function wBasePrice(name) {
       const n = name.toLowerCase();
-      if (n.includes('phone') || n.includes('computer') || n.includes('laptop')) return 500;
-      if (n.includes('chair') || n.includes('table') || n.includes('sofa'))      return 150;
-      if (n.includes('bottle') || n.includes('cup'))                              return 15;
-      return Math.random() * 50 + 10;
+      if (n.includes('phone') || n.includes('iphone') || n.includes('samsung')) return 450;
+      if (n.includes('computer') || n.includes('laptop') || n.includes('macbook')) return 650;
+      if (n.includes('watch') || n.includes('smartwatch')) return 180;
+      if (n.includes('chair') || n.includes('table') || n.includes('sofa') || n.includes('desk')) return 150;
+      if (n.includes('stole') || n.includes('scarf') || n.includes('shawl')) return 20;
+      if (n.includes('band aid') || n.includes('bandage') || n.includes('first aid')) return 12;
+      if (n.includes('necklace') || n.includes('jewelry') || n.includes('earring')) return 25;
+      if (n.includes('tie') || n.includes('necktie') || n.includes('bowtie')) return 18;
+      if (n.includes('book') || n.includes('novel') || n.includes('textbook')) return 15;
+      if (n.includes('sunglasses') || n.includes('glasses')) return 35;
+      if (n.includes('bottle') || n.includes('thermos') || n.includes('flask')) return 20;
+      if (n.includes('mug') || n.includes('cup')) return 12;
+      return Math.random() * 40 + 15;
     }
     function wWearMult(wear) {
       return { 'New':1.0, 'Like New':0.9, 'Good':0.7, 'Fair':0.5, 'Poor':0.3 }[wear] || 0.7;
