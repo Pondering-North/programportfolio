@@ -12,11 +12,13 @@
   <link rel="stylesheet" href="mystyles/style.css">
 
   <style>
+    /* Give BugCal enough room and prevent portfolio styles leaking in */
     #bugcal-root {
       margin: 3rem auto 0;
       max-width: 1000px;
       border-radius: 1rem;
       overflow: hidden;
+      /* Isolate BugCal's own styles from the portfolio */
       isolation: isolate;
     }
 
@@ -24,18 +26,6 @@
       max-width: 65ch;
       margin: 0 auto 1rem;
       line-height: 1.8;
-    }
-
-    .page-section ul {
-      max-width: 65ch;
-      margin: 1rem auto;
-      line-height: 1.8;
-      text-align: left;
-      padding-left: 2rem;
-    }
-
-    .page-section li {
-      margin-bottom: 0.5rem;
     }
   </style>
 </head>
@@ -69,40 +59,36 @@
   </div>
 
   <!-- Page content -->
-  <section class="page-section" id="bugcal">
+  <section class="page-section" id="main-content">
     <a href="index.html#portfolio" class="back-link">Back to Portfolio</a>
 
-    <h1>🪲 BugCal</h1>
+    <h1>BugCal</h1>
 
     <div class="page-divider"><span>✦</span></div>
 
-    <p>BugCal is a bug-themed personal calendar created to demonstrate Claude AI's ability 
-    to implement multiple AI agents working together. These agents detect scheduling conflicts,
-    verify federal holidays via live web search, and allow the user to schedule events by writing down 
-    the specified day(s), time(s), and month(s) they're set on. The specifics of when an event occurs,
-    if it is reoccuring, and how long it lasts are fully customizable.</p>
-
-    <p>Color-coordinated sorting, filtering, timezone management, voice command support, and event 
-    reminders are all supported.
+    <p>BugCal is a personal calendar app made with Claude AI; it was a test to see how Claude 
+    can manage creating multiple agents to hande multiple tasks. 
     </p>
 
-    <div class="page-divider"><span>✦</span></div>
-
+    <p>Click any day to add an event, or describe one and let the AI fill
+    in the details. Recurring events, custom repeat patterns, and colour-coded categories
+    are all supported. Events are saved to your browser's local storage.</p>
 
     <!-- BugCal mounts here -->
     <div id="bugcal-root"></div>
 
   </section>
 
-  <!-- BugCal embed bundle -->
-  <!-- Note: Rename your uploaded file to match this exact filename -->
-  <script type="module" src="bugcal_embed.js"></script>
+  <!-- BugCal embed bundle — built from src/embed.jsx via `npm run build:lib` -->
+  <!-- Copy dist-embed/bugcal.embed.js into the same folder as this file      -->
+  <script>window.process = { env: { NODE_ENV: "production" } };</script>
+  <script src="bugcal.embed.js"></script>
 
   <script>
     function toggleMenu() {
       document.getElementById('mobileMenu').classList.toggle('open');
     }
   </script>
-  
+
 </body>
 </html>

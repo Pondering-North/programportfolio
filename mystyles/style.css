@@ -458,6 +458,7 @@ body {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-mid);
+  text-decoration: none;
   transition: color 0.25s;
 }
 .back-link::before {
