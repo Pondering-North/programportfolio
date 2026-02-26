@@ -76,31 +76,18 @@
 
     <div class="page-divider"><span>✦</span></div>
 
-    <p>BugCal is a bug-themed personal calendar that I created to demonstrate Claude AI's ability 
-    to create and implement multiple AI agents working together. The app uses these agents to parse 
-    natural language event descriptions, detect scheduling conflicts, and verify US federal holidays 
-    via live web search.</p>
+    <p>BugCal is a bug-themed personal calendar created to demonstrate Claude AI's ability 
+    to implement multiple AI agents working together. These agents detect scheduling conflicts,
+    verify federal holidays via live web search, and allow the user to schedule events by writing down 
+    the specified day(s), time(s), and month(s) they're set on. The specifics of when an event occurs,
+    if it is reoccuring, and how long it lasts are fully customizable.</p>
 
-    <h3>Features</h3>
-    <ul>
-      <li><strong>Natural Language Parsing:</strong> Enter events like "standup every Mon/Wed/Fri at 9am" and the AI agent parses the details automatically</li>
-      <li><strong>Recurring Events:</strong> Support for daily, weekly, biweekly, monthly, yearly, or custom weekday patterns</li>
-      <li><strong>Flexible Repeat Endings:</strong> Events can repeat infinitely, until a specific date, or for a set number of occurrences</li>
-      <li><strong>Conflict Detection:</strong> AI agent warns you when new events overlap with existing ones</li>
-      <li><strong>Holiday Verification:</strong> AI agent verifies US federal holiday dates using live web search</li>
-      <li><strong>Persistent Storage:</strong> Events are saved to your browser's local storage and persist across sessions</li>
-      <li><strong>Bug-Themed Icons:</strong> Each event can be customized with adorable bug icons and colors</li>
-    </ul>
-
-    <h3>Planned Features</h3>
-    <p>Future updates will include day/week/month/agenda views, event reminders, search & filtering, 
-    timezone management, and voice command support.</p>
+    <p>Color-coordinated sorting, filtering, timezone management, voice command support, and event 
+    reminders are all supported.
+    </p>
 
     <div class="page-divider"><span>✦</span></div>
 
-    <h3>Live Demo</h3>
-    <p>Try it out below! Add events, set them to recur, and watch the AI agents detect conflicts 
-    and verify holidays.</p>
 
     <!-- BugCal mounts here -->
     <div id="bugcal-root"></div>
