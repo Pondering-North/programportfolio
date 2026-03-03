@@ -11,14 +11,17 @@
 
   <link rel="stylesheet" href="mystyles/style.css">
 
+  <!-- React + ReactDOM + Babel (no build step needed) -->
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
   <style>
-    /* Give BugCal enough room and prevent portfolio styles leaking in */
     #bugcal-root {
       margin: 3rem auto 0;
       max-width: 1000px;
       border-radius: 1rem;
       overflow: hidden;
-      /* Isolate BugCal's own styles from the portfolio */
       isolation: isolate;
     }
 
@@ -66,8 +69,8 @@
 
     <div class="page-divider"><span>✦</span></div>
 
-    <p>BugCal is a personal calendar app made with Claude AI; it was a test to see how Claude 
-    can manage creating multiple agents to hande multiple tasks. 
+    <p>BugCal is a personal calendar app made with Claude AI; it was a test to see how Claude
+    can manage creating multiple agents to handle multiple tasks.
     </p>
 
     <p>Click any day to add an event, or describe one and let the AI fill
@@ -79,10 +82,30 @@
 
   </section>
 
-  <!-- BugCal embed bundle — built from src/embed.jsx via `npm run build:lib` -->
-  <!-- Copy dist-embed/bugcal.embed.js into the same folder as this file      -->
-  <script>window.process = { env: { NODE_ENV: "production" } };</script>
-  <script src="bugcal_embed.js"></script>
+  <!-- Load and mount BugCal — fetch the JSX, compile with Babel, then mount -->
+  <script>
+    fetch('BugCal.js')
+      .then(r => {
+        console.log('BugCal.js fetch status:', r.status, r.url);
+        return r.text();
+      })
+      .then(src => {
+        console.log('BugCal.js first 200 chars:', src.slice(0, 200));
+        // Compile the JSX source with Babel
+        const compiled = Babel.transform(src, { presets: ['react'] }).code;
+        // Run the compiled code (defines BugCalendar in this scope)
+        const fn = new Function('React', 'ReactDOM', compiled + '\nreturn BugCalendar;');
+        const BugCalendar = fn(React, ReactDOM);
+        // Mount
+        const root = ReactDOM.createRoot(document.getElementById('bugcal-root'));
+        root.render(React.createElement(BugCalendar));
+      })
+      .catch(err => {
+        console.error('BugCal load error:', err);
+        document.getElementById('bugcal-root').innerHTML =
+          '<p style="color:red;padding:2rem">Failed to load BugCal: ' + err.message + '</p>';
+      });
+  </script>
 
   <script>
     function toggleMenu() {
