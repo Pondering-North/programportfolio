@@ -336,39 +336,47 @@
         display: grid;
         grid-template-columns: 1fr 1fr;
         align-items: start;
-        min-height: calc(100vh - var(--nav-height));
+        height: calc(100vh - var(--nav-height));
+        overflow: hidden;
       }
 
-      .col-about {
-        border-right: 1px solid rgba(201,168,76,0.2);
-        position: sticky;
-        top: var(--nav-height);
-        max-height: calc(100vh - var(--nav-height));
+      /* Shared scroll column styles */
+      .col-about,
+      .col-portfolio {
+        height: calc(100vh - var(--nav-height));
         overflow-y: auto;
-        /* override page-section centering */
         max-width: none;
         margin: 0;
-        text-align: left;
-        /* Custom scrollbar */
+        /* Custom scrollbar — Firefox */
         scrollbar-width: thin;
         scrollbar-color: rgba(201,168,76,0.3) transparent;
       }
 
-      .col-about::-webkit-scrollbar {
+      /* Custom scrollbar — WebKit */
+      .col-about::-webkit-scrollbar,
+      .col-portfolio::-webkit-scrollbar {
         width: 3px;
       }
 
-      .col-about::-webkit-scrollbar-track {
+      .col-about::-webkit-scrollbar-track,
+      .col-portfolio::-webkit-scrollbar-track {
         background: transparent;
       }
 
-      .col-about::-webkit-scrollbar-thumb {
+      .col-about::-webkit-scrollbar-thumb,
+      .col-portfolio::-webkit-scrollbar-thumb {
         background: rgba(201,168,76,0.3);
         border-radius: 99px;
       }
 
-      .col-about::-webkit-scrollbar-thumb:hover {
+      .col-about::-webkit-scrollbar-thumb:hover,
+      .col-portfolio::-webkit-scrollbar-thumb:hover {
         background: rgba(201,168,76,0.6);
+      }
+
+      .col-about {
+        border-right: 1px solid rgba(201,168,76,0.2);
+        text-align: left;
       }
 
       .col-about p {
@@ -380,28 +388,34 @@
         margin: 2.5rem 0;
       }
 
-      .col-portfolio {
-        /* override page-section centering */
-        max-width: none;
-        margin: 0;
-      }
-
       .col-portfolio .portfolio-carousel {
         margin: 0 auto;
         max-width: 100%;
       }
 
+      /* Mobile: revert to normal page scroll */
       @media (max-width: 900px) {
         .main-columns {
           grid-template-columns: 1fr;
+          height: auto;
+          overflow: visible;
+        }
+
+        .col-about,
+        .col-portfolio {
+          height: auto;
+          overflow-y: visible;
+          scrollbar-width: none;
+        }
+
+        .col-about::-webkit-scrollbar,
+        .col-portfolio::-webkit-scrollbar {
+          display: none;
         }
 
         .col-about {
           border-right: none;
           border-bottom: 1px solid rgba(201,168,76,0.2);
-          position: static;
-          max-height: none;
-          overflow-y: visible;
           text-align: center;
         }
 
