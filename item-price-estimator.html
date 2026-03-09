@@ -541,24 +541,17 @@
 
     <div class="page-divider"><span>✦</span></div>
 
-    <p>The Item Price Estimator is my first app and my first experiment with vibe-coding. The majority of it
-    was coded with the Antigravity App, and I made manual edits where necessary.</p>
-
-    <p>The app was commissioned for personal use. The client's request was to be able to have an easy way to
-    price objects they were planning to sell. Special emphasis was placed on using <em>retrieval augmented generation</em>
+    <p>The Item Price Estimator app was commissioned for personal use; the client's request was to be able to 
+    have an easy way to price objects they were planning to sell. Special emphasis was placed on using <em>retrieval augmented generation</em>
     (RAG) to retrieve search results from the internet containing the same (or similar) object in mind, evaluate
-    the object's price based on quality, and store the results in a table that would be saved. The app was also supposed
-    to use the camera of the user's device in order to take the picture in the first place. And, of course, the 
-    theme had to be fun and psychedelic!
+    the object's price based on quality, and store the results in a table that would be saved on the user's local system. 
     </p>
 
-    <p>This was where I learned the basics and fundamentalss of vibe-coding. Most of my work was focused more on
-    trouble-shooting problems and bugs that rose, tweaking features that didn't fit my vision, and making sure 
-    the app could perform RAG successfully. It was a very good exercise in understanding where my time would
-    be divided during the creation of an app; a test run in how an actual large-scale project might go.
+    <p>The app first requests access to the device's camera through a MediaDevices API built into the browser itself. 
+    Once the picture is taken, a pre-trained AI image classification model called MobileNet identifies the object 
+    (this runs entirely in-browser thanks to Tensorflow); then the results are sent to the backend, where an API 
+    key calls Google Gemini to do a grounding search for the real-world price.
     </p>
-
-    <p>The result is a handy, stylish little gadget that makes pricing your items much easier!</p>
 
     <p>Whether you're organizing a garage sale, getting rid of old furniture, or just satisfying your curiosity, 
     the Item Estimator provides a simple way to help you out.</p>

@@ -291,6 +291,33 @@
 
       /* Responsive adjustments */
       @media (max-width: 768px) {
+        .nav-contact-info {
+          display: none;
+        }
+      }
+
+      .nav-contact-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.15rem;
+        font-family: 'Jost', sans-serif;
+        font-size: 0.75rem;
+        color: var(--text-mid);
+      }
+
+      .nav-contact-info a {
+        color: var(--text-mid);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+
+      .nav-contact-info a:hover {
+        color: var(--gold-dark);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
         .carousel-image {
           max-width: 90%;
           max-height: 50%;
@@ -327,10 +354,15 @@
         <ul class="nav-links">
           <li><a href="#about" class="active">About</a></li>
           <li><a href="#portfolio">Portfolio</a></li>
-          <li><a href="#contact">Contact</a></li>
+
         </ul>
 
-        <a href="#contact" class="nav-cta">Get in Touch!</a>
+        <div class="nav-contact-info">
+          <a href="tel:7202325930">(720)-232-5930</a>
+          <a href="mailto:303computing@303computing.ai">303computing@303computing.ai</a>
+          <a href="https://www.linkedin.com/in/olivia-balas-myprofile/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+
 
         <button class="nav-hamburger" aria-label="Open menu" onclick="toggleMenu()">
           <span></span>
@@ -344,9 +376,9 @@
         <ul>
           <li><a href="#about"     onclick="toggleMenu()">About</a></li>
           <li><a href="#portfolio" onclick="toggleMenu()">Portfolio</a></li>
-          <li><a href="#contact"   onclick="toggleMenu()">Contact</a></li>
+
         </ul>
-        <a href="#contact" class="nav-cta" onclick="toggleMenu()">Get in Touch</a>
+
       </div>
     </div>
 
@@ -428,12 +460,7 @@
       </div>
     </section>
 
-    <section class="page-section" id="contact">
-      <h2>Get in Touch</h2>
-      <p>Feel free to reach out with any questions or requests.</p>
-      <p>(720)-232-5930</p>
 
-    </section>
 
     <!--scripts-->
     <script>
