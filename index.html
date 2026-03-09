@@ -301,20 +301,43 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        gap: 0.15rem;
-        font-family: 'Jost', sans-serif;
-        font-size: 0.75rem;
-        color: var(--text-mid);
+        gap: 0.2rem;
+        padding: 0 1.2rem;
+        border-right: 1px solid rgba(201,168,76,0.3);
+        border-left: 1px solid rgba(201,168,76,0.3);
       }
 
       .nav-contact-info a {
+        position: relative;
+        font-family: 'Jost', sans-serif;
+        font-weight: 300;
+        font-size: 0.68rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
         color: var(--text-mid);
         text-decoration: none;
-        transition: color 0.2s;
+        transition: color 0.25s;
+      }
+
+      .nav-contact-info a::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
       }
 
       .nav-contact-info a:hover {
         color: var(--gold-dark);
+      }
+
+      .nav-contact-info a:hover::after {
+        transform: scaleX(1);
       }
 
       /* Responsive adjustments */
@@ -450,7 +473,7 @@
 
         <div class="nav-contact-info">
           <a href="tel:7202325930">(720)-232-5930</a>
-          <a href="mailto:303computing@303computing.ai">303computing@303computing.ai</a>
+          <a href="/cdn-cgi/l/email-protection#1e2d2e2d7d71736e6b6a7770795e2d2e2d7d71736e6b6a777079307f77"><span class="__cf_email__" data-cfemail="3704070454585a4742435e59507704070454585a4742435e595019565e">[email&#160;protected]</span></a>
           <a href="https://www.linkedin.com/in/olivia-balas-myprofile/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         </div>
 
@@ -477,14 +500,14 @@
 
         <div class="page-divider"><span>✦</span></div>
 
-        <p>I have been working with code for at least 2 years, and my current goal is to attain a position as 
-        a data analyst, website developer, and/or a python developer. As a recent college graduate and new professional, 
-        my interests combine both the natural world and the identification of patterns and solutions, using artificial 
-        intelligence and other tools to model and better understand that world. I'm specifically focused on the interdependencies of 
+        <p>My current ambition is to attain a position as a data analyst, website developer, and/or a python 
+        developer. As a recent college graduate and new professional, my interests combine both the natural world
+        and the identification of patterns and solutions, using artificial intelligence and other tools 
+        to model and better understand that world. I'm specifically focused on the interdependencies of 
         bioinformatics, genetics, and entomology.
         </p>
 
-        <p>As of now, the projects I've built have been focused on making everyday tasks easier; my goal is to 
+        <p>As of now, the projects I've built have been focused on making everyday tasks easier; my long-term goal is to 
         create projects that tackle the issues surrounding insect conservation, genetic analysis, and 
         parasite ecology.
         </p>
@@ -552,7 +575,7 @@
     </div><!-- /.main-columns -->
 
     <!--scripts-->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
       // Bug dot art pattern - creates a beetle shape
       const bugPattern = [
         // Antennae
