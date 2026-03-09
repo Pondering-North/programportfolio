@@ -349,6 +349,26 @@
         max-width: none;
         margin: 0;
         text-align: left;
+        /* Custom scrollbar */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(201,168,76,0.3) transparent;
+      }
+
+      .col-about::-webkit-scrollbar {
+        width: 3px;
+      }
+
+      .col-about::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .col-about::-webkit-scrollbar-thumb {
+        background: rgba(201,168,76,0.3);
+        border-radius: 99px;
+      }
+
+      .col-about::-webkit-scrollbar-thumb:hover {
+        background: rgba(201,168,76,0.6);
       }
 
       .col-about p {
