@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HerbWitch — Olivia Balas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="mystyles/style.css">
+
+  <style>
+    .herbwitch-embed {
+      margin: 3rem auto 0;
+      max-width: 1000px;
+      border-radius: 1rem;
+      overflow: hidden;
+      isolation: isolate;
+      box-shadow:
+        0 8px 40px rgba(201,168,76,0.15),
+        0 0 0 1px rgba(201,168,76,0.2);
+    }
+
+    .herbwitch-embed iframe {
+      display: block;
+      width: 100%;
+      height: 780px;
+      border: none;
+      border-radius: 1rem;
+      background: #f5f0e8;
+    }
+
+    .embed-fallback {
+      display: none;
+      padding: 3rem;
+      text-align: center;
+      background: rgba(201,168,76,0.05);
+      border-radius: 1rem;
+      border: 1px solid rgba(201,168,76,0.2);
+    }
+
+    .embed-fallback p {
+      margin-bottom: 1.5rem;
+    }
+
+    .open-link {
+      display: inline-block;
+      padding: 0.6rem 1.6rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--gold-dark);
+      border: 1px solid var(--gold);
+      border-radius: 2px;
+      background: linear-gradient(135deg, rgba(245,233,196,0.55), rgba(232,208,138,0.18));
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .open-link:hover {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-pale));
+      box-shadow: 0 2px 16px rgba(201,168,76,0.28);
+    }
+
+    .page-section p {
+      max-width: 65ch;
+      margin: 0 auto 1rem;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 768px) {
+      .herbwitch-embed iframe {
+        height: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Navigation -->
+  <div class="nav-wrapper">
+    <nav class="nav-inner" aria-label="Main navigation">
+      <a href="index.html" class="nav-logo">Olivia Balas</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#portfolio" class="active">Portfolio</a></li>
+      </ul>
+      <div class="nav-contact-info">
+        <a href="tel:7202325930">(720)-232-5930</a>
+        <a href="mailto:303computing@303computing.ai">303computing@303computing.ai</a>
+        <a href="https://www.linkedin.com/in/olivia-balas-myprofile/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </div>
+      <button class="nav-hamburger" aria-label="Open menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+    <div class="nav-mobile" id="mobileMenu">
+      <ul>
+        <li><a href="index.html" onclick="toggleMenu()">Home</a></li>
+        <li><a href="index.html#portfolio" onclick="toggleMenu()">Portfolio</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <section class="page-section" id="main-content">
+    <a href="index.html#portfolio" class="back-link">Back to Portfolio</a>
+
+    <h1>HerbWitch</h1>
+
+    <div class="page-divider"><span>✦</span></div>
+
+    <p>HerbWitch is an herbal remedy advisor powered by Claude AI. Describe what's ailing you
+    and a three-agent pipeline — an Interpreter, a Researcher, and the Witch herself — works
+    together to surface relevant herbal wisdom drawn from trusted botanical sources.</p>
+
+    <p>All herb recommendations are grounded in citations from approved research databases,
+    so every suggestion links back to a real source. No hallucinations, just plants.</p>
+
+    <!-- HerbWitch iframe embed -->
+    <div class="herbwitch-embed" id="embedContainer">
+      <iframe
+        src="https://herbwitch.vercel.app/"
+        title="HerbWitch — Herbal Remedy Advisor"
+        loading="lazy"
+        sandbox="allow-scripts allow-same-origin allow-forms"
+        onerror="showFallback()"
+      ></iframe>
+    </div>
+
+    <!-- Fallback if iframe is blocked -->
+    <div class="embed-fallback" id="embedFallback">
+      <p>The embedded demo isn't available in your browser. Open it directly instead:</p>
+      <a href="https://herbwitch.vercel.app/" target="_blank" rel="noopener noreferrer" class="open-link">
+        Open HerbWitch ↗
+      </a>
+    </div>
+
+  </section>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    function showFallback() {
+      document.getElementById('embedContainer').style.display = 'none';
+      document.getElementById('embedFallback').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
