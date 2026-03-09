@@ -30,6 +30,48 @@
       margin: 0 auto 1rem;
       line-height: 1.8;
     }
+
+    .nav-contact-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.2rem;
+      padding: 0 1.2rem;
+      border-right: 1px solid rgba(201,168,76,0.3);
+      border-left: 1px solid rgba(201,168,76,0.3);
+    }
+
+    .nav-contact-info a {
+      position: relative;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+
+    .nav-contact-info a::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .nav-contact-info a:hover { color: var(--gold-dark); }
+    .nav-contact-info a:hover::after { transform: scaleX(1); }
+
+    @media (max-width: 768px) {
+      .nav-contact-info { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -39,25 +81,16 @@
   <div class="nav-wrapper">
     <nav class="nav-inner" aria-label="Main navigation">
       <a href="index.html" class="nav-logo">Olivia Balas</a>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="index.html#portfolio" class="active">Portfolio</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
-      </ul>
-      <a href="index.html#contact" class="nav-cta">Get in Touch!</a>
+      <div class="nav-contact-info">
+        <a href="tel:7202325930">(720)-232-5930</a>
+        <a href="mailto:303computing@303computing.ai">303computing@303computing.ai</a>
+        <a href="https://www.linkedin.com/in/olivia-balas-myprofile/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </div>
       <button class="nav-hamburger" aria-label="Open menu" onclick="toggleMenu()">
         <span></span><span></span><span></span>
       </button>
     </nav>
     <div class="nav-mobile" id="mobileMenu">
-      <ul>
-        <li><a href="index.html"           onclick="toggleMenu()">Home</a></li>
-        <li><a href="about.html"           onclick="toggleMenu()">About</a></li>
-        <li><a href="index.html#portfolio" onclick="toggleMenu()">Portfolio</a></li>
-        <li><a href="index.html#contact"   onclick="toggleMenu()">Contact</a></li>
-      </ul>
-      <a href="index.html#contact" class="nav-cta" onclick="toggleMenu()">Get in Touch!</a>
     </div>
   </div>
 
