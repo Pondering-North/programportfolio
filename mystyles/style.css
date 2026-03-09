@@ -330,34 +330,6 @@ body {
 
 /* ── Page layout helpers ────────────────────────────────────── */
 
-.page-hero {
-  min-height: 80vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 1.2rem;
-  text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(160deg, var(--blush) 0%, var(--rose-light) 60%, var(--gold-pale) 100%);
-}
-
-.page-hero h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-weight: 300;
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  color: var(--text-dark);
-  letter-spacing: 0.04em;
-}
-
-.page-hero p {
-  font-family: 'Jost', sans-serif;
-  font-weight: 300;
-  font-size: 1rem;
-  letter-spacing: 0.12em;
-  color: var(--text-mid);
-  max-width: 44ch;
-}
 
 .page-section {
   padding: 5rem 2rem;
