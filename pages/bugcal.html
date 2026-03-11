@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="mystyles/style.css">
+  <link rel="stylesheet" href="../styles/style.css">
 
   <!-- React + ReactDOM + Babel (no build step needed) -->
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -80,7 +80,7 @@
   <!-- Navigation -->
   <div class="nav-wrapper">
     <nav class="nav-inner" aria-label="Main navigation">
-      <a href="index.html" class="nav-logo">Olivia Balas</a>
+      <a href="../index.html" class="nav-logo">Olivia Balas</a>
       <div class="nav-contact-info">
         <a href="tel:7202325930">(720)-232-5930</a>
         <a href="mailto:303computing@303computing.ai">303computing@303computing.ai</a>
@@ -96,7 +96,7 @@
 
   <!-- Page content -->
   <section class="page-section" id="main-content">
-    <a href="index.html#portfolio" class="back-link">Back to Portfolio</a>
+    <a href="../index.html#portfolio" class="back-link">Back to Portfolio</a>
 
     <h1>BugCal</h1>
 
@@ -117,7 +117,7 @@
 
   <!-- Load and mount BugCal — fetch the JSX, compile with Babel, then mount -->
   <script>
-    fetch('BugCal.js')
+    fetch('../src/BugCal.js')
       .then(r => {
         console.log('BugCal.js fetch status:', r.status, r.url);
         return r.text();
