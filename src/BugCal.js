@@ -190,6 +190,7 @@ function Btn({children,variant="primary",small=false,...p}){
 function Pill({children,active,onClick}){return(<button onClick={onClick} style={{background:active?C.accentDim:"transparent",border:`1px solid ${active?C.accent:C.border}`,color:active?C.white:C.muted,borderRadius:6,padding:"3px 9px",fontSize:12,cursor:"pointer",fontFamily:"monospace"}}>{children}</button>);}
 function Toggle({on,onToggle}){return(<button onClick={onToggle} style={{background:on?C.accent:C.border,border:"none",borderRadius:14,width:42,height:22,cursor:"pointer",position:"relative",transition:"background .2s",flexShrink:0}}><span style={{position:"absolute",top:2,left:on?20:2,width:18,height:18,background:C.white,borderRadius:"50%",transition:"left .2s",display:"block"}}/></button>);}
 function VTab({label,active,onClick}){return(<button onClick={onClick} style={{background:active?C.accent:"transparent",color:active?C.bg:C.muted,border:`1px solid ${active?C.accent:C.border}`,borderRadius:7,padding:"4px 12px",fontSize:11,cursor:"pointer",fontFamily:"monospace",fontWeight:active?"bold":"normal",letterSpacing:.4}}>{label}</button>);}
+function Tooltip({text,children}){const[show,setShow]=useState(false);const[pos,setPos]=useState({top:0,left:0,below:false});const ref=useRef(null);const onEnter=()=>{if(ref.current){const r=ref.current.getBoundingClientRect();const below=r.top<60;setPos({top:below?r.bottom+7:r.top-7,left:r.left+r.width/2,below});}setShow(true);};return(<div ref={ref} style={{position:"relative",display:"inline-flex"}} onMouseEnter={onEnter} onMouseLeave={()=>setShow(false)}>{children}{show&&(<div style={{position:"fixed",top:pos.top,left:pos.left,transform:pos.below?"translateX(-50%)":"translate(-50%, -100%)",background:C.card,border:`1px solid ${C.border}`,borderRadius:6,padding:"5px 9px",fontSize:10,color:C.text,fontFamily:"monospace",whiteSpace:"nowrap",zIndex:9999,letterSpacing:.3,pointerEvents:"none",boxShadow:"0 2px 8px rgba(0,0,0,0.4)"}}>{text}<div style={{position:"absolute",left:"50%",transform:"translateX(-50%)",width:0,height:0,...(pos.below?{bottom:"100%",borderLeft:"5px solid transparent",borderRight:"5px solid transparent",borderBottom:`5px solid ${C.border}`}:{top:"100%",borderLeft:"5px solid transparent",borderRight:"5px solid transparent",borderTop:`5px solid ${C.border}`})}}/></div>)}</div>);}
 
 // ── 🎤 Voice HUD ───────────────────────────────────────────────────────────
 // Uses MediaRecorder (works in ALL browsers: Chrome, Firefox, Safari, Edge)
@@ -600,10 +601,12 @@ function EventForm({initial={},allEvents=[],onSave,onDelete,defaultTz=""}){
   return(
     <div>
       <div style={{background:C.surface,border:`1px solid ${C.border}`,borderRadius:9,padding:11,marginBottom:14}}>
-        <div style={{color:C.amber,fontSize:10,marginBottom:6,fontFamily:"monospace",letterSpacing:1}}>🦋 QUICK-FILL FROM NATURAL LANGUAGE</div>
+        <div style={{color:C.amber,fontSize:10,marginBottom:6,fontFamily:"monospace",letterSpacing:1}}>🦋 DESCRIBE YOUR EVENT — AI CREATES IT</div>
         <div style={{display:"flex",gap:7}}>
           <input value={ai} onChange={e=>setAi(e.target.value)} onKeyDown={e=>e.key==="Enter"&&parseAI()} placeholder='e.g. "standup Mon/Wed/Fri at 9am for 30 min"' style={{...iSt,flex:1,fontSize:12,padding:"7px 10px"}}/>
-          <Btn onClick={parseAI} small>{aiL?"🔄":"🐝"}</Btn>
+          <Tooltip text="Type your event in plain English and AI will fill in all the fields">
+            <Btn onClick={parseAI} small>{aiL?"🔄":"🐝"}</Btn>
+          </Tooltip>
         </div>
       </div>
       <FI label="EVENT TITLE" value={f.title} onChange={e=>set("title",e.target.value)} placeholder="Butterfly migration watch..."/>
@@ -985,8 +988,12 @@ function BugCalendar(){
           <div style={{display:"flex",gap:6,alignItems:"center",flexWrap:"wrap"}}>
             {gStatus!=="idle"&&<div style={{fontSize:10,color:gColor,fontFamily:"monospace",padding:"4px 8px",background:C.surface,border:`1px solid ${C.border}`,borderRadius:5}}>{gMsg}</div>}
             <Btn variant="ghost" small onClick={()=>setShowTz(true)}>🌐 TZ</Btn>
-            <Btn variant="ghost" small onClick={()=>{setSearchQuery("");setShowSearch(true);}}>🔍 Search</Btn>
-            <Btn variant="ghost" small onClick={()=>setShowReminder(true)} style={{position:"relative"}}>🔔{reminderSettings.enabled&&<span style={{position:"absolute",top:3,right:3,width:5,height:5,background:C.accent,borderRadius:"50%"}}/>}</Btn>
+            <Tooltip text="Search and filter events by title, notes, color, repeat type, or bug">
+              <Btn variant="ghost" small onClick={()=>{setSearchQuery("");setShowSearch(true);}}>🔍 Search</Btn>
+            </Tooltip>
+            <Tooltip text="Set up browser notifications to remind you before events">
+              <Btn variant="ghost" small onClick={()=>setShowReminder(true)} style={{position:"relative"}}>🔔{reminderSettings.enabled&&<span style={{position:"absolute",top:3,right:3,width:5,height:5,background:C.accent,borderRadius:"50%"}}/>}</Btn>
+            </Tooltip>
             <Btn onClick={()=>openNew(dayKey)}>+ New Event</Btn>
           </div>
         </div>
@@ -1000,8 +1007,8 @@ function BugCalendar(){
           <div style={{flex:1}}/>
           <div style={{fontSize:9,color:C.muted,fontFamily:"monospace",padding:"3px 6px",background:C.surface,border:`1px solid ${C.border}`,borderRadius:4}}>🌐 {userTz.split("/").pop().replace(/_/g," ")}</div>
           <div style={{display:"flex",gap:3}}>
-            {[["year","Year"],["month","Month"],["week","Week"],["day","Day"],["agenda","Agenda"]].map(([v,l])=>(
-              <VTab key={v} label={l} active={view===v} onClick={()=>{setView(v);if(v==="week")setWeekStart(startOfWeek(dayKey));}}/>
+            {[["year","Year",""],["month","Month",""],["week","Week",""],["day","Day",""],["agenda","Agenda","Chronological list of all upcoming events for the next 90 days"]].map(([v,l,tip])=>(
+              tip?(<Tooltip key={v} text={tip}><VTab label={l} active={view===v} onClick={()=>{setView(v);if(v==="week")setWeekStart(startOfWeek(dayKey));}}/></Tooltip>):(<VTab key={v} label={l} active={view===v} onClick={()=>{setView(v);if(v==="week")setWeekStart(startOfWeek(dayKey));}}/>)
             ))}
           </div>
         </div>
