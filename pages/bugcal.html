@@ -174,9 +174,18 @@
         <p>BugCal is a personal calendar app made with Claude AI. It was a personal test to see how Claude
         can manage creating multiple agents to handle multiple tasks.</p>
 
-        <p>Click any day to add an event, or describe one and let the AI fill
-        in the details. Recurring events, custom repeat patterns, and colour-coded categories
-        are all supported. Events are saved to your browser's local storage.</p>
+        <p>The frontend handles the UI and calls the agents, while the backend acts as a proxy between
+        the frontend and Anthropic's AI - this ensures that the key being used is not exposed. There are 
+        five total agents that handle different functions; the conflict agent (checks for overlapping events),
+        the grounding agent (searches the web to verify US federal holiday dates for the current year), the 
+        reminder agent (fires browser push notifications before events), the timezone agent (converts an event to 
+        a timezone that you requested using natural-language conversion), and the voice command agent (enables you 
+        to create events, search events, and/or change views by voice command).
+        </p>
+
+        <p>You can click any day to add an event, or describe one and let the AI fill in the details. 
+        Scheduling of recurring events, colour-coded categories, agenda views, and event filtering are
+        all supported. Events are saved to your browser's local storage.</p>
       </aside>
 
     </div>

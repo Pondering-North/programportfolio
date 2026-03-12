@@ -232,12 +232,33 @@
 
       <!-- Info (right) -->
       <aside class="project-info">
-        <p>HerbWitch is an herbal remedy advisor powered by Claude AI. Describe what's ailing you
-        and a three-agent pipeline — an Interpreter, a Researcher, and the Witch herself — works
-        together to surface relevant herbal wisdom drawn from trusted botanical sources.</p>
+        <p>HerbWitch is an herbal remedy advisor powered by Claude AI. The user types in 
+        a specific ailment they are struggling with, and the app returns a list of potential
+        herbal tea recipes that can help with the ailment. The user can also type in a specific 
+        herb to see what ailments it may be able to soothe.</p>
 
-        <p>All herb recommendations are grounded in citations from approved research databases,
-        so every suggestion links back to a real source. No hallucinations, just plants.</p>
+        <p>Like BugCal, the frontend handles the UI and the backend handles the API calls. There are 
+        three agents that run in real time when the user puts in a request. The first agent 
+        reads the description and distills it into a list of ailments (eg "period gramps, sore stomach).
+        The app itself has several pages about herbs selected from hard-coded approved sources, and this is 
+        where the second agent comes into play; looks the ailment list up against a hardcoded herb map, 
+        identifies the top 3 matching herbs, and fetches the pages in parallel from up to 5 approved sources.
+        After it extracts excerpts and returns them to the frontend (with source urls attached), the third agent 
+        synthesizes those excerpts and the user's original ailment into a structured response.
+        </p>
+
+        <p>The hardcoded herb map has 175 specific urls to prevent hallucinations and/or inaccurate information
+        being spread. The third agent's system forbids recommending anything not in the provided excerpts and 
+        truthfully states if there are no relevant herbs or ailments to help with the request. 
+        </p>
+
+        <p>The app has a small 'fun fact of the day' widget, where the server extracts information about a specific 
+        herb and displays it in a widget in the bottom right. The result is cached so that Claude is only called 
+        once per day, and the same fact remains on the app until it's changed at midnight.
+        </p>
+
+        <p>This app is only for fun. If you have medical concerns, consult a doctor.</p>
+
       </aside>
 
     </div>
