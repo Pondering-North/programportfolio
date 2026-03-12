@@ -12,10 +12,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
 
-    <!--style, sitewide (navigation, variables, layout)-->
+    <!--style, sitewide-->
     <link rel="stylesheet" href="styles/style.css">
 
-    <!--style, splashscreen with bug dot art-->
     <style>
       #splash {
         position: fixed;
@@ -34,7 +33,6 @@
         );
       }
 
-      /* Background animations */
       #splash::before {
         content: '';
         position: absolute;
@@ -50,7 +48,6 @@
         to   { transform: scale(1.08) translateY(-2%); }
       }
 
-      /* embroidered border */
       #splash::after {
         content: '';
         position: absolute;
@@ -59,7 +56,7 @@
         box-shadow:
           inset 0 0 40px rgba(201,168,76,0.08),
           0 0 0 1px rgba(245,233,196,0.6);
-        pointer-events:none;
+        pointer-events: none;
       }
 
       .splash-content {
@@ -73,7 +70,6 @@
         padding: 3rem;
       }
 
-      /* Bug dot art container */
       #bug-art {
         position: relative;
         width: 300px;
@@ -98,7 +94,7 @@
 
       .dot:hover {
         background: #ff6b9d;
-        box-shadow: 
+        box-shadow:
           0 0 15px rgba(255, 107, 157, 1),
           0 0 30px rgba(255, 107, 157, 0.8),
           0 0 45px rgba(255, 107, 157, 0.6),
@@ -112,18 +108,15 @@
       }
 
       @keyframes dotPulse {
-        0%, 100% {
-          box-shadow: 0 0 8px rgba(255, 107, 157, 0.7);
-        }
+        0%, 100% { box-shadow: 0 0 8px rgba(255, 107, 157, 0.7); }
         50% {
-          box-shadow: 
+          box-shadow:
             0 0 15px rgba(255, 107, 157, 1),
             0 0 25px rgba(255, 107, 157, 0.8),
             0 0 35px rgba(255, 107, 157, 0.6);
         }
       }
 
-      /* Binary digit styling */
       .binary {
         position: absolute;
         font-family: 'Courier New', monospace;
@@ -134,38 +127,19 @@
         pointer-events: none;
       }
 
-      /* Dissolve animations */
       @keyframes dissolveToBinary {
-        0% {
-          opacity: 1;
-          transform: translate(0, 0) scale(1);
-        }
-        50% {
-          opacity: 0.5;
-          transform: translate(var(--tx), var(--ty)) scale(0.5);
-        }
-        100% {
-          opacity: 0;
-          transform: translate(var(--tx), var(--ty)) scale(0);
-        }
+        0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+        50%  { opacity: 0.5; transform: translate(var(--tx), var(--ty)) scale(0.5); }
+        100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
       }
 
       @keyframes binaryAppear {
-        0% {
-          opacity: 0;
-          transform: scale(0.5);
-        }
-        50% {
-          opacity: 1;
-          transform: scale(1.2);
-        }
-        100% {
-          opacity: 0;
-          transform: scale(1) translateY(20px);
-        }
+        0%   { opacity: 0; transform: scale(0.5); }
+        50%  { opacity: 1; transform: scale(1.2); }
+        100% { opacity: 0; transform: scale(1) translateY(20px); }
       }
 
-      /* Portfolio Carousel Styles */
+      /* ── Portfolio Carousel ──────────────────────────────────── */
       .portfolio-carousel {
         position: relative;
         max-width: 900px;
@@ -176,7 +150,7 @@
       .carousel-container {
         position: relative;
         width: 100%;
-        padding-bottom: 60%;
+        padding-bottom: 55%;
         background: rgba(255, 255, 255, 0.3);
         border-radius: 12px;
         overflow: hidden;
@@ -193,30 +167,40 @@
         transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
+      /* ── Slide: left image, right text ─────────────────────── */
       .carousel-slide {
         min-width: 100%;
         height: 100%;
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         align-items: center;
-        justify-content: center;
-        padding: 2rem;
+        gap: 0;
         cursor: pointer;
         text-decoration: none;
         color: inherit;
+        transition: background 0.3s;
       }
 
       .carousel-slide:hover {
         background: rgba(255, 255, 255, 0.1);
       }
 
-      .carousel-image {
-        max-width: 80%;
-        max-height: 60%;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1.5rem;
-        object-fit: contain;
+      .carousel-slide-image {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(201,168,76,0.08);
+        border-right: 1px solid rgba(201,168,76,0.15);
+        font-size: 5rem;
+      }
+
+      .carousel-slide-info {
+        padding: 2rem 2.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: left;
       }
 
       .carousel-title {
@@ -224,18 +208,37 @@
         font-size: 1.8rem;
         font-weight: 400;
         color: var(--text-dark);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.75rem;
       }
 
       .carousel-description {
         font-family: 'Jost', sans-serif;
-        font-size: 0.9rem;
-        line-height: 1.6;
+        font-size: 0.88rem;
+        line-height: 1.7;
         color: var(--text-mid);
-        max-width: 600px;
-        text-align: center;
+        font-weight: 300;
       }
 
+      .carousel-cta {
+        display: inline-block;
+        margin-top: 1.25rem;
+        font-family: 'Jost', sans-serif;
+        font-weight: 300;
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--gold-dark);
+        border-bottom: 1px solid var(--gold);
+        padding-bottom: 2px;
+        transition: color 0.25s, border-color 0.25s;
+      }
+
+      .carousel-slide:hover .carousel-cta {
+        color: var(--text-dark);
+        border-color: var(--text-dark);
+      }
+
+      /* ── Controls ───────────────────────────────────────────── */
       .carousel-controls {
         display: flex;
         justify-content: center;
@@ -290,13 +293,7 @@
         transform: scale(1.3);
       }
 
-      /* Responsive adjustments */
-      @media (max-width: 768px) {
-        .nav-contact-info {
-          display: none;
-        }
-      }
-
+      /* ── Nav contact info ───────────────────────────────────── */
       .nav-contact-info {
         display: flex;
         flex-direction: column;
@@ -332,30 +329,14 @@
         transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
       }
 
-      .nav-contact-info a:hover {
-        color: var(--gold-dark);
-      }
+      .nav-contact-info a:hover { color: var(--gold-dark); }
+      .nav-contact-info a:hover::after { transform: scaleX(1); }
 
-      .nav-contact-info a:hover::after {
-        transform: scaleX(1);
-      }
-
-      /* Responsive adjustments */
       @media (max-width: 768px) {
-        .carousel-image {
-          max-width: 90%;
-          max-height: 50%;
-        }
-
-        .carousel-title {
-          font-size: 1.4rem;
-        }
-
-        .carousel-description {
-          font-size: 0.85rem;
-        }
+        .nav-contact-info { display: none; }
       }
-      /* Two-column main layout */
+
+      /* ── Two-column main layout ─────────────────────────────── */
       .main-columns {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -364,39 +345,27 @@
         overflow: hidden;
       }
 
-      /* Shared scroll column styles */
       .col-about,
       .col-portfolio {
         height: calc(100vh - var(--nav-height));
         overflow-y: auto;
         max-width: none;
         margin: 0;
-        /* Custom scrollbar — Firefox */
         scrollbar-width: thin;
         scrollbar-color: rgba(201,168,76,0.3) transparent;
       }
 
-      /* Custom scrollbar — WebKit */
       .col-about::-webkit-scrollbar,
-      .col-portfolio::-webkit-scrollbar {
-        width: 3px;
-      }
-
+      .col-portfolio::-webkit-scrollbar { width: 3px; }
       .col-about::-webkit-scrollbar-track,
-      .col-portfolio::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
+      .col-portfolio::-webkit-scrollbar-track { background: transparent; }
       .col-about::-webkit-scrollbar-thumb,
       .col-portfolio::-webkit-scrollbar-thumb {
         background: rgba(201,168,76,0.3);
         border-radius: 99px;
       }
-
       .col-about::-webkit-scrollbar-thumb:hover,
-      .col-portfolio::-webkit-scrollbar-thumb:hover {
-        background: rgba(201,168,76,0.6);
-      }
+      .col-portfolio::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.6); }
 
       .col-about {
         border-right: 1px solid rgba(201,168,76,0.2);
@@ -408,16 +377,14 @@
         max-width: 100%;
       }
 
-      .col-about .page-divider {
-        margin: 2.5rem 0;
-      }
+      .col-about .page-divider { margin: 2.5rem 0; }
 
       .col-portfolio .portfolio-carousel {
         margin: 0 auto;
         max-width: 100%;
       }
 
-      /* Mobile: revert to normal page scroll */
+      /* ── Mobile ─────────────────────────────────────────────── */
       @media (max-width: 900px) {
         .main-columns {
           grid-template-columns: 1fr;
@@ -433,9 +400,7 @@
         }
 
         .col-about::-webkit-scrollbar,
-        .col-portfolio::-webkit-scrollbar {
-          display: none;
-        }
+        .col-portfolio::-webkit-scrollbar { display: none; }
 
         .col-about {
           border-right: none;
@@ -443,53 +408,61 @@
           text-align: center;
         }
 
-        .col-about p {
-          margin: 0 auto 1rem;
+        .col-about p { margin: 0 auto 1rem; }
+        .col-about .page-divider { margin: 2.5rem auto; }
+
+        /* Stack slides vertically on mobile */
+        .carousel-slide {
+          grid-template-columns: 1fr;
+          grid-template-rows: 160px auto;
         }
 
-        .col-about .page-divider {
-          margin: 2.5rem auto;
+        .carousel-slide-image {
+          border-right: none;
+          border-bottom: 1px solid rgba(201,168,76,0.15);
+          font-size: 3.5rem;
         }
+
+        .carousel-slide-info {
+          padding: 1.5rem;
+          text-align: center;
+          align-items: center;
+        }
+
+        .carousel-title { font-size: 1.4rem; }
+        .carousel-description { font-size: 0.85rem; }
+
+        .carousel-container { padding-bottom: 85%; }
       }
     </style>
   </head>
 
-  <!--body-->
   <body>
     <a href="#home" class="skip-link">Skip to main content</a>
 
-    <!--splash screen with bug dot art-->
+    <!-- Splash screen -->
     <div id="splash" onclick="triggerSplashExit(event)" role="button" aria-label="Enter site">
       <div class="splash-content">
         <div id="bug-art"></div>
       </div>
     </div>
 
-    <!--navigation-->
+    <!-- Navigation -->
     <div class="nav-wrapper">
       <nav class="nav-inner" aria-label="Main navigation">
-
         <a href="#home" class="nav-logo">Olivia Balas</a>
-
         <div class="nav-contact-info">
           <a href="tel:7202325930">(720)-232-5930</a>
           <a href="mailto:303computing@303computing.ai">303computing@303computing.ai</a>
           <a href="https://www.linkedin.com/in/olivia-balas-myprofile/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         </div>
-
-
         <button class="nav-hamburger" aria-label="Open menu" onclick="toggleMenu()">
-          <span></span>
-          <span></span>
-          <span></span>
+          <span></span><span></span><span></span>
         </button>
-
       </nav>
-
-
     </div>
 
-    <!--page content-->
+    <!-- Page content -->
     <div id="home"></div>
 
     <div class="main-columns">
@@ -497,173 +470,147 @@
       <!-- LEFT: About -->
       <section class="page-section col-about" id="about">
         <h2>About Me</h2>
-
         <div class="page-divider"><span>✦</span></div>
 
-        <p>I am currently seeking web development and programming opportunities to enrich my experience and 
+        <p>I am currently seeking web development and programming opportunities to enrich my experience and
         narrow down my future directions in achieving a PhD. As a recent college graduate and new professional,
-        my interests combine both the natural world and the identification of patterns and solutions, 
-        using artificial intelligence and other tools to model and better understand that world. 
-        I'm specifically focused on the interdependencies of bioinformatics, genetics, and entomology.
-        </p>
+        my interests combine both the natural world and the identification of patterns and solutions,
+        using artificial intelligence and other tools to model and better understand that world.
+        I'm specifically focused on the interdependencies of bioinformatics, genetics, and entomology.</p>
 
         <p>As of now, the projects I've built have been focused on making everyday tasks easier; my long-term goals are to
         develop computational methods for understanding biological data, contribute to research on the conservation
-        of insect species, and create online resources to help spread knowledge of insect ecology.
-        </p>
+        of insect species, and create online resources to help spread knowledge of insect ecology.</p>
 
         <div class="page-divider"><span>✦</span></div>
-
         <h2>Certifications</h2>
-
-        <p>I completed a certificate for Applied Bioinformatics through the University of San Diego's 
-        Division of Extended Studies. Through this course I developed my knowledge of FASTA, Python, 
-        biostatistics, and SQL.
-        </p>
-
-        <p>I am also certified as an Azure AI Engineer Associate and Azure Data Science Associate; I utilize 
-        AI programming tools in my work, including Antigravity, Google AI Studio, Google Gemini, and 
-        Claude AI. 
-        </p>
-
         <div class="page-divider"><span>✦</span></div>
 
+        <p>I completed a certificate for Applied Bioinformatics through the University of San Diego's
+        Division of Extended Studies. Through this course I developed my knowledge of FASTA, Python,
+        biostatistics, and SQL.</p>
+
+        <p>I am also certified as an Azure AI Engineer Associate and Azure Data Science Associate; I utilize
+        AI programming tools in my work, including Antigravity, Google AI Studio, Google Gemini, and
+        Claude AI.</p>
+
+        <div class="page-divider"><span>✦</span></div>
         <h2>Education</h2>
-        <p>I graduated from the University of Colorado Boulder with a Bachelor's in Environmental Biology and Ecology.
-        Though it isn't a Computer Science degree, my Bachelor's has helped prepare me for a more technical field 
-        through courses involving statistical analysis, RStudio programming, and genetic analysis. I also have experience
-        with frontend development; for one of my courses, I developed and designed a website on the etiology of native 
-        bee diseases.
-        </p>
-
         <div class="page-divider"><span>✦</span></div>
 
+        <p>I graduated from the University of Colorado Boulder with a Bachelor's in Environmental Biology and Ecology.
+        Though it isn't a Computer Science degree, my Bachelor's has helped prepare me for a more technical field
+        through courses involving statistical analysis, RStudio programming, and genetic analysis. I also have experience
+        with frontend development; for one of my courses, I developed and designed a website on the etiology of native
+        bee diseases.</p>
+
+        <div class="page-divider"><span>✦</span></div>
       </section>
 
       <!-- RIGHT: Portfolio -->
       <section class="page-section col-portfolio" id="portfolio">
-      <h2>Portfolio</h2>
+        <h2>Portfolio</h2>
 
-      <div class="portfolio-carousel">
-        <div class="carousel-container">
-          <div class="carousel-track" id="carouselTrack">
-            
-            <!-- Slide 1: Item Price Estimator -->
-            <a href="pages/item-price-estimator.html" class="carousel-slide">
-              <div style="width: 100%; height: 60%; display: flex; align-items: center; justify-content: center; background: rgba(201,168,76,0.1); border-radius: 8px; margin-bottom: 1.5rem;">
-                <div style="font-size: 4rem; color: var(--gold);">📊</div>
-              </div>
-              <h3 class="carousel-title">Item Price Estimator</h3>
-              <p class="carousel-description">A tool designed with Google Anitgravity to help estimate prices for various items 
-              using RAG grounding and analysis.</p>
-            </a>
+        <div class="portfolio-carousel">
+          <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack">
 
-            <!-- Slide 2: BugCal -->
-            <a href="pages/bugcal.html" class="carousel-slide">
-              <div style="width: 100%; height: 60%; display: flex; align-items: center; justify-content: center; background: rgba(201,168,76,0.1); border-radius: 8px; margin-bottom: 1.5rem;">
-                <div style="font-size: 4rem; color: var(--gold);">🐛📅</div>
-              </div>
-              <h3 class="carousel-title">BugCal</h3>
-              <p class="carousel-description">A simple calendar app created with Claude AI to have extenstive functionality 
-              in creating, scheduling, and filtering events.</p>
-            </a>
+              <!-- Slide 1: Item Price Estimator -->
+              <a href="pages/item-price-estimator.html" class="carousel-slide">
+                <div class="carousel-slide-image">📊</div>
+                <div class="carousel-slide-info">
+                  <h3 class="carousel-title">Item Price Estimator</h3>
+                  <p class="carousel-description">A tool designed with Google Antigravity to help estimate prices for various items using RAG grounding and analysis.</p>
+                  <span class="carousel-cta">View project →</span>
+                </div>
+              </a>
 
-            <!-- Slide 3: HerbWitch -->
-            <a href="pages/herbwitch.html" class="carousel-slide">
-              <div style="width: 100%; height: 60%; display: flex; align-items: center; justify-content: center; background: rgba(201,168,76,0.1); border-radius: 8px; margin-bottom: 1.5rem;">
-                <div style="font-size: 4rem; color: var(--gold);">🌿🔮</div>
-              </div>
-              <h3 class="carousel-title">HerbWitch</h3>
-              <p class="carousel-description">An advisor for herbal tea remedies, created with Claude AI and powered by a three-agent 
-              pipeline.</p>
-            </a>
+              <!-- Slide 2: BugCal -->
+              <a href="pages/bugcal.html" class="carousel-slide">
+                <div class="carousel-slide-image">🐛📅</div>
+                <div class="carousel-slide-info">
+                  <h3 class="carousel-title">BugCal</h3>
+                  <p class="carousel-description">A simple calendar app created with Claude AI with extensive functionality in creating, scheduling, and filtering events.</p>
+                  <span class="carousel-cta">View project →</span>
+                </div>
+              </a>
 
-            <!-- Slide 4: App 4 -->
-            <div class="carousel-slide" style="pointer-events: none; opacity: 0.6;">
-              <div style="width: 100%; height: 60%; display: flex; align-items: center; justify-content: center; background: rgba(201,168,76,0.1); border-radius: 8px; margin-bottom: 1.5rem;">
-                <div style="font-size: 4rem; color: var(--gold);">🔧</div>
+              <!-- Slide 3: HerbWitch -->
+              <a href="pages/herbwitch.html" class="carousel-slide">
+                <div class="carousel-slide-image">🌿🔮</div>
+                <div class="carousel-slide-info">
+                  <h3 class="carousel-title">HerbWitch</h3>
+                  <p class="carousel-description">An advisor for herbal tea remedies, created with Claude AI and powered by a three-agent pipeline.</p>
+                  <span class="carousel-cta">View project →</span>
+                </div>
+              </a>
+
+              <!-- Slide 4: App 4 (WIP) -->
+              <div class="carousel-slide" style="pointer-events: none; opacity: 0.6;">
+                <div class="carousel-slide-image">🔧</div>
+                <div class="carousel-slide-info">
+                  <h3 class="carousel-title">App 4</h3>
+                  <p class="carousel-description">Work in progress.</p>
+                </div>
               </div>
-              <h3 class="carousel-title">App 4</h3>
-              <p class="carousel-description">Work in progress.</p>
+
             </div>
+          </div>
 
+          <div class="carousel-controls">
+            <button class="carousel-button" id="prevBtn" onclick="changeSlide(-1)">‹</button>
+            <div class="carousel-indicators" id="indicators"></div>
+            <button class="carousel-button" id="nextBtn" onclick="changeSlide(1)">›</button>
           </div>
         </div>
-
-        <div class="carousel-controls">
-          <button class="carousel-button" id="prevBtn" onclick="changeSlide(-1)">‹</button>
-          <div class="carousel-indicators" id="indicators"></div>
-          <button class="carousel-button" id="nextBtn" onclick="changeSlide(1)">›</button>
-        </div>
-      </div>
-    </section>
+      </section>
 
     </div><!-- /.main-columns -->
 
-    <!--scripts-->
     <script>
-      // Bug dot art pattern - creates a beetle shape
+      // Bug dot art pattern
       const bugPattern = [
-        // Antennae
-        [3, 1], [2, 2], [1, 3],
-        [7, 1], [8, 2], [9, 3],
-        // Head
-        [4, 3], [5, 3], [6, 3],
-        [3, 4], [4, 4], [5, 4], [6, 4], [7, 4],
-        // Body
-        [2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5], [8, 5],
-        [2, 6], [3, 6], [4, 6], [5, 6], [6, 6], [7, 6], [8, 6],
-        [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7],
-        [2, 8], [3, 8], [4, 8], [5, 8], [6, 8], [7, 8], [8, 8],
-        [3, 9], [4, 9], [5, 9], [6, 9], [7, 9],
-        // Legs
-        [1, 6], [0, 7],
-        [9, 6], [10, 7],
-        [1, 8], [0, 9],
-        [9, 8], [10, 9],
-        [2, 10], [1, 11],
-        [8, 10], [9, 11]
+        [3,1],[2,2],[1,3],[7,1],[8,2],[9,3],
+        [4,3],[5,3],[6,3],[3,4],[4,4],[5,4],[6,4],[7,4],
+        [2,5],[3,5],[4,5],[5,5],[6,5],[7,5],[8,5],
+        [2,6],[3,6],[4,6],[5,6],[6,6],[7,6],[8,6],
+        [2,7],[3,7],[4,7],[5,7],[6,7],[7,7],[8,7],
+        [2,8],[3,8],[4,8],[5,8],[6,8],[7,8],[8,8],
+        [3,9],[4,9],[5,9],[6,9],[7,9],
+        [1,6],[0,7],[9,6],[10,7],
+        [1,8],[0,9],[9,8],[10,9],
+        [2,10],[1,11],[8,10],[9,11]
       ];
 
-      // Create bug dot art
       function createBugArt() {
         const container = document.getElementById('bug-art');
         const cellSize = 25;
-        
         bugPattern.forEach(([x, y], index) => {
           const dot = document.createElement('div');
           dot.className = 'dot';
           dot.style.left = (x * cellSize + 20) + 'px';
-          dot.style.top = (y * cellSize + 20) + 'px';
+          dot.style.top  = (y * cellSize + 20) + 'px';
           dot.dataset.index = index;
           container.appendChild(dot);
         });
       }
 
-      // Dissolve bug into binary
       function dissolveBug() {
         const dots = document.querySelectorAll('.dot');
         const container = document.getElementById('bug-art');
-        
         dots.forEach((dot, index) => {
           setTimeout(() => {
-            // Random direction for dissolution
             const angle = Math.random() * Math.PI * 2;
             const distance = 100 + Math.random() * 200;
-            const tx = Math.cos(angle) * distance;
-            const ty = Math.sin(angle) * distance;
-            
-            dot.style.setProperty('--tx', tx + 'px');
-            dot.style.setProperty('--ty', ty + 'px');
+            dot.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+            dot.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
             dot.style.animation = 'dissolveToBinary 0.8s forwards';
-            
-            // Create binary digit
             setTimeout(() => {
               const binary = document.createElement('div');
               binary.className = 'binary';
               binary.textContent = Math.random() > 0.5 ? '1' : '0';
               binary.style.left = dot.style.left;
-              binary.style.top = dot.style.top;
+              binary.style.top  = dot.style.top;
               binary.style.animation = 'binaryAppear 1.5s forwards';
               container.appendChild(binary);
             }, 400);
@@ -671,20 +618,13 @@
         });
       }
 
-      // Trigger splash exit
       function triggerSplashExit(e) {
         const splash = document.getElementById('splash');
-        
         splash.style.pointerEvents = 'none';
-        
-        // Start bug dissolution
         dissolveBug();
-        
-        // Fade out splash after animation
         setTimeout(() => {
           splash.style.opacity = '0';
           splash.style.transition = 'opacity 0.8s';
-          
           setTimeout(() => {
             splash.remove();
             document.body.style.overflow = '';
@@ -693,10 +633,8 @@
         }, 2000);
       }
 
-      // Skip splash if already seen
       (function() {
         const splash = document.getElementById('splash');
-      
         if (sessionStorage.getItem('splashSeen')) {
           splash.remove();
           document.body.style.overflow = '';
@@ -706,15 +644,12 @@
         }
       })();
 
-      // Mobile menu toggle
       function toggleMenu() {
         document.getElementById('mobileMenu').classList.toggle('open');
       }
 
-      // Nav link on scroll
       const sections = document.querySelectorAll('section[id]');
       const links = document.querySelectorAll('.nav-links a');
-
       const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -726,61 +661,42 @@
       }, { threshold: 0.5 });
       sections.forEach(s => observer.observe(s));
 
-      // Carousel functionality
+      // Carousel
       let currentSlide = 0;
       const totalSlides = 4;
 
       function createIndicators() {
-        const indicatorsContainer = document.getElementById('indicators');
+        const container = document.getElementById('indicators');
         for (let i = 0; i < totalSlides; i++) {
-          const indicator = document.createElement('div');
-          indicator.className = 'carousel-indicator';
-          if (i === 0) indicator.classList.add('active');
-          indicator.onclick = () => goToSlide(i);
-          indicatorsContainer.appendChild(indicator);
+          const dot = document.createElement('div');
+          dot.className = 'carousel-indicator';
+          if (i === 0) dot.classList.add('active');
+          dot.onclick = () => goToSlide(i);
+          container.appendChild(dot);
         }
       }
 
       function updateCarousel() {
-        const track = document.getElementById('carouselTrack');
-        track.style.transform = `translateX(-${currentSlide * 100}%)`;
-        
-        // Update indicators
-        const indicators = document.querySelectorAll('.carousel-indicator');
-        indicators.forEach((indicator, index) => {
-          indicator.classList.toggle('active', index === currentSlide);
+        document.getElementById('carouselTrack').style.transform = `translateX(-${currentSlide * 100}%)`;
+        document.querySelectorAll('.carousel-indicator').forEach((d, i) => {
+          d.classList.toggle('active', i === currentSlide);
         });
-        
-        // Update button states
         document.getElementById('prevBtn').disabled = currentSlide === 0;
         document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
       }
 
-      function changeSlide(direction) {
-        currentSlide += direction;
-        if (currentSlide < 0) currentSlide = 0;
-        if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+      function changeSlide(dir) {
+        currentSlide = Math.max(0, Math.min(totalSlides - 1, currentSlide + dir));
         updateCarousel();
       }
 
-      function goToSlide(index) {
-        currentSlide = index;
+      function goToSlide(i) {
+        currentSlide = i;
         updateCarousel();
       }
 
-      // Initialize carousel
       createIndicators();
       updateCarousel();
-
-      // Auto-advance carousel (optional)
-      // setInterval(() => {
-      //   if (currentSlide < totalSlides - 1) {
-      //     changeSlide(1);
-      //   } else {
-      //     currentSlide = 0;
-      //     updateCarousel();
-      //   }
-      // }, 5000);
     </script>
 
   </body>
