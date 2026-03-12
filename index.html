@@ -190,9 +190,33 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(201,168,76,0.08);
-        border-right: 1px solid rgba(201,168,76,0.15);
         font-size: 5rem;
+        padding: 1.5rem;
+      }
+
+      .carousel-slide-image-inner {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          linear-gradient(135deg, rgba(245,233,196,0.18), rgba(232,208,138,0.08)),
+          rgba(201,168,76,0.06);
+        border-radius: 12px;
+        border: 1px solid var(--gold);
+        box-shadow:
+          0 0 0 1px rgba(245,233,196,0.5),
+          0 4px 24px rgba(201,168,76,0.14),
+          inset 0 0 20px rgba(201,168,76,0.06);
+        transition: box-shadow 0.3s;
+      }
+
+      .carousel-slide:hover .carousel-slide-image-inner {
+        box-shadow:
+          0 0 0 1px rgba(245,233,196,0.7),
+          0 6px 32px rgba(201,168,76,0.22),
+          inset 0 0 28px rgba(201,168,76,0.10);
       }
 
       .carousel-slide-info {
@@ -418,9 +442,12 @@
         }
 
         .carousel-slide-image {
-          border-right: none;
-          border-bottom: 1px solid rgba(201,168,76,0.15);
           font-size: 3.5rem;
+          padding: 1rem;
+        }
+
+        .carousel-slide-image-inner {
+          border-radius: 10px;
         }
 
         .carousel-slide-info {
@@ -517,7 +544,7 @@
 
               <!-- Slide 1: Item Price Estimator -->
               <a href="pages/item-price-estimator.html" class="carousel-slide">
-                <div class="carousel-slide-image">📊</div>
+                <div class="carousel-slide-image"><div class="carousel-slide-image-inner">📊</div></div>
                 <div class="carousel-slide-info">
                   <h3 class="carousel-title">Item Price Estimator</h3>
                   <p class="carousel-description">A tool designed with Google Antigravity to help estimate prices for various items using RAG grounding and analysis.</p>
@@ -527,7 +554,7 @@
 
               <!-- Slide 2: BugCal -->
               <a href="pages/bugcal.html" class="carousel-slide">
-                <div class="carousel-slide-image">🐛📅</div>
+                <div class="carousel-slide-image"><div class="carousel-slide-image-inner">🐛📅</div></div>
                 <div class="carousel-slide-info">
                   <h3 class="carousel-title">BugCal</h3>
                   <p class="carousel-description">A simple calendar app created with Claude AI with extensive functionality in creating, scheduling, and filtering events.</p>
@@ -537,7 +564,7 @@
 
               <!-- Slide 3: HerbWitch -->
               <a href="pages/herbwitch.html" class="carousel-slide">
-                <div class="carousel-slide-image">🌿🔮</div>
+                <div class="carousel-slide-image"><div class="carousel-slide-image-inner">🌿🔮</div></div>
                 <div class="carousel-slide-info">
                   <h3 class="carousel-title">HerbWitch</h3>
                   <p class="carousel-description">An advisor for herbal tea remedies, created with Claude AI and powered by a three-agent pipeline.</p>
@@ -547,7 +574,7 @@
 
               <!-- Slide 4: App 4 (WIP) -->
               <div class="carousel-slide" style="pointer-events: none; opacity: 0.6;">
-                <div class="carousel-slide-image">🔧</div>
+                <div class="carousel-slide-image"><div class="carousel-slide-image-inner">🔧</div></div>
                 <div class="carousel-slide-info">
                   <h3 class="carousel-title">App 4</h3>
                   <p class="carousel-description">Work in progress.</p>
@@ -567,7 +594,7 @@
 
     </div><!-- /.main-columns -->
 
-    <script>
+        <script>
       // Bug dot art pattern
       const bugPattern = [
         [3,1],[2,2],[1,3],[7,1],[8,2],[9,3],
