@@ -17,20 +17,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
 
   <style>
-    #bugcal-root {
-      margin: 3rem auto 0;
-      max-width: 1000px;
-      border-radius: 1rem;
-      overflow: hidden;
-      isolation: isolate;
-    }
-
-    .page-section p {
-      max-width: 65ch;
-      margin: 0 auto 1rem;
-      line-height: 1.8;
-    }
-
     .nav-contact-info {
       display: flex;
       flex-direction: column;
@@ -40,7 +26,6 @@
       border-right: 1px solid rgba(201,168,76,0.3);
       border-left: 1px solid rgba(201,168,76,0.3);
     }
-
     .nav-contact-info a {
       position: relative;
       font-family: 'Jost', sans-serif;
@@ -52,7 +37,6 @@
       text-decoration: none;
       transition: color 0.25s;
     }
-
     .nav-contact-info a::after {
       content: '';
       position: absolute;
@@ -65,12 +49,88 @@
       transform-origin: center;
       transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
     }
-
     .nav-contact-info a:hover { color: var(--gold-dark); }
     .nav-contact-info a:hover::after { transform: scaleX(1); }
-
     @media (max-width: 768px) {
       .nav-contact-info { display: none; }
+    }
+
+    /* ── Page wrapper ───────────────────────────────────────────── */
+    .project-page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* ── Header block (back link + title + divider) ─────────────── */
+    .project-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .project-header .back-link {
+      display: inline-flex;
+      margin-bottom: 1.5rem;
+    }
+    .project-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--text-dark);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Side-by-side layout ────────────────────────────────────── */
+    .project-split {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* ── Demo pane (left) ───────────────────────────────────────── */
+    .project-demo {
+      min-width: 0; /* prevents grid blowout */
+    }
+    #bugcal-root {
+      border-radius: 1rem;
+      overflow: hidden;
+      isolation: isolate;
+      box-shadow:
+        0 8px 40px rgba(201,168,76,0.12),
+        0 0 0 1px rgba(201,168,76,0.18);
+    }
+
+    /* ── Info pane (right) ──────────────────────────────────────── */
+    .project-info {
+      position: sticky;
+      top: calc(var(--nav-height) + 1.5rem);
+    }
+    .project-info p {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: var(--text-mid);
+      margin-bottom: 1rem;
+    }
+
+    /* ── Mobile: stack vertically ───────────────────────────────── */
+    @media (max-width: 900px) {
+      .project-split {
+        grid-template-columns: 1fr;
+      }
+      .project-info {
+        position: static;
+        /* Show info above demo on mobile */
+        order: -1;
+        text-align: center;
+      }
+      .project-info p {
+        max-width: 65ch;
+        margin-left: auto;
+        margin-right: auto;
+      }
     }
   </style>
 </head>
@@ -90,34 +150,39 @@
         <span></span><span></span><span></span>
       </button>
     </nav>
-    <div class="nav-mobile" id="mobileMenu">
-    </div>
+    <div class="nav-mobile" id="mobileMenu"></div>
   </div>
 
   <!-- Page content -->
-  <section class="page-section" id="main-content">
-    <a href="../index.html#portfolio" class="back-link">Back to Portfolio</a>
+  <main class="project-page" id="main-content">
 
-    <h1>BugCal</h1>
+    <div class="project-header">
+      <a href="../index.html#portfolio" class="back-link">Back to Portfolio</a>
+      <h1>BugCal</h1>
+      <div class="page-divider"><span>✦</span></div>
+    </div>
 
-    <div class="page-divider"><span>✦</span></div>
+    <div class="project-split">
 
-    <p>BugCal is a personal calendar app made with Claude AI; it was a test to see how Claude
-    can manage creating multiple agents to handle multiple tasks.
-    </p>
+      <!-- Demo (left) -->
+      <div class="project-demo">
+        <div id="bugcal-root"></div>
+      </div>
 
-    <p>Click any day to add an event, or describe one and let the AI fill
-    in the details. Recurring events, custom repeat patterns, and colour-coded categories
-    are all supported. Events are saved to your browser's local storage.</p>
+      <!-- Info (right) -->
+      <aside class="project-info">
+        <p>BugCal is a personal calendar app made with Claude AI; it was a test to see how Claude
+        can manage creating multiple agents to handle multiple tasks.</p>
 
-    <div class="page-divider"><span>✦</span></div>
+        <p>Click any day to add an event, or describe one and let the AI fill
+        in the details. Recurring events, custom repeat patterns, and colour-coded categories
+        are all supported. Events are saved to your browser's local storage.</p>
+      </aside>
 
-    <!-- BugCal mounts here -->
-    <div id="bugcal-root"></div>
+    </div>
+  </main>
 
-  </section>
-
-  <!-- Load and mount BugCal — fetch the JSX, compile with Babel, then mount -->
+  <!-- Load and mount BugCal -->
   <script>
     fetch('../src/BugCal.js')
       .then(r => {
@@ -125,13 +190,9 @@
         return r.text();
       })
       .then(src => {
-        console.log('BugCal.js first 200 chars:', src.slice(0, 200));
-        // Compile the JSX source with Babel
         const compiled = Babel.transform(src, { presets: ['react'] }).code;
-        // Run the compiled code (defines BugCalendar in this scope)
         const fn = new Function('React', 'ReactDOM', compiled + '\nreturn BugCalendar;');
         const BugCalendar = fn(React, ReactDOM);
-        // Mount
         const root = ReactDOM.createRoot(document.getElementById('bugcal-root'));
         root.render(React.createElement(BugCalendar));
       })

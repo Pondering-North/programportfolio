@@ -16,48 +16,28 @@
   <link rel="stylesheet" href="../styles/style.css">
 
   <style>
-       /* ── Widget shell ─────────────────────────────────────────── */
+       /* ── Widget shell — decoration moved to .project-demo wrapper ── */
     .demo-widget {
-      margin: 3rem auto 0;
-      max-width: 1100px;
-      border-radius: 1.5rem;
-      overflow: hidden;
-      border: 2px solid hsl(320, 100%, 50%);
-      box-shadow:
-        0 12px 48px rgba(0,0,0,0.5),
-        0 0 25px hsl(320, 100%, 50%);
       position: relative;
       font-family: 'Quicksand', sans-serif;
       color: hsl(60, 100%, 95%);
     }
 
-    /* Psychedelic spinning background — same as the real app */
+    /* Background replaced with static radial glows on w-inner —
+       covers the full scrollable area with no white gaps, no layout shift */
     .demo-widget .w-bg {
-      position: absolute;
-      inset: 0;
-      background: conic-gradient(from 0deg at 50% 50%,
-        hsl(320,100%,50%),
-        hsl(280,100%,50%),
-        hsl(180,100%,50%),
-        hsl(60,100%,50%),
-        hsl(320,100%,50%)
-      );
-      opacity: 0.15;
-      animation: w-spin 20s linear infinite;
-      filter: blur(60px);
-      z-index: 0;
-      pointer-events: none;
-    }
-    @keyframes w-spin {
-      from { transform: rotate(0deg) scale(1.5); }
-      to   { transform: rotate(360deg) scale(1.5); }
+      display: none;
     }
 
-    /* Dark purple base */
+    /* Dark purple base with ambient glow baked in as static gradients */
     .demo-widget .w-inner {
       position: relative;
       z-index: 1;
-      background: hsl(280, 50%, 10%);
+      background:
+        radial-gradient(ellipse 80% 40% at 20% 30%, hsla(320,100%,50%,0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 80% 70%, hsla(180,100%,50%,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 50% 10%, hsla(280,100%,50%,0.07) 0%, transparent 70%),
+        hsl(280, 50%, 10%);
       padding: 1.5rem;
     }
 
@@ -544,128 +524,225 @@
     @media (max-width: 768px) {
       .nav-contact-info { display: none; }
     }
+
+    /* ── Page wrapper ───────────────────────────────────────────── */
+    .project-page {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    .project-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .project-header .back-link {
+      display: inline-flex;
+      margin-bottom: 1.5rem;
+    }
+    .project-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--text-dark);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Side-by-side layout ────────────────────────────────────── */
+    .project-split {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* ── Demo pane (left) ───────────────────────────────────────── */
+    /* The project-demo wrapper owns the background, border, and scroll.
+       This way the dark bg always fills the full scrollable area — no white gaps. */
+    .project-demo {
+      min-width: 0;
+      overflow-x: auto;
+      border-radius: 1.5rem;
+      border: 2px solid hsl(320, 100%, 50%);
+      box-shadow:
+        0 12px 48px rgba(0,0,0,0.5),
+        0 0 25px hsl(320, 100%, 50%);
+      background:
+        radial-gradient(ellipse 80% 40% at 20% 30%, hsla(320,100%,50%,0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 80% 70%, hsla(180,100%,50%,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 50% 10%, hsla(280,100%,50%,0.07) 0%, transparent 70%),
+        hsl(280, 50%, 10%);
+    }
+
+    /* Strip decoration off demo-widget itself — project-demo owns it now */
+    .demo-widget {
+      margin: 0 !important;
+      max-width: none !important;
+      overflow: visible !important;
+      border: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+    }
+
+    /* w-inner background is now transparent — project-demo shows through */
+    .demo-widget .w-inner {
+      background: transparent !important;
+      min-width: 560px;
+    }
+
+    /* ── Info pane (right) ──────────────────────────────────────── */
+    .project-info {
+      position: sticky;
+      top: calc(var(--nav-height) + 1.5rem);
+    }
+    .project-info p {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: var(--text-mid);
+      margin-bottom: 1rem;
+    }
+
+    /* ── Mobile ─────────────────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .project-split {
+        grid-template-columns: 1fr;
+      }
+      .project-info {
+        position: static;
+        order: -1;
+        text-align: center;
+      }
+      .project-info p {
+        max-width: 65ch;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
   </style>
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- navigation -->
+  <!-- Navigation -->
   <div class="nav-wrapper">
     <nav class="nav-inner" aria-label="Main navigation">
       <a href="../index.html" class="nav-logo">Olivia Balas</a>
       <div class="nav-contact-info">
         <a href="tel:7202325930">(720)-232-5930</a>
-        <a href="mailto:303computing@303computing.ai">303computing@303computing.ai</a>
+        <a href="/cdn-cgi/l/email-protection#fecdcecd9d91938e8b8a979099becdcecd9d91938e8b8a979099d09f97"><span class="__cf_email__" data-cfemail="e1d2d1d2828e8c919495888f86a1d2d1d2828e8c919495888f86cf8088">[email&#160;protected]</span></a>
         <a href="https://www.linkedin.com/in/olivia-balas-myprofile/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </div>
       <button class="nav-hamburger" aria-label="Open menu" onclick="toggleMenu()">
         <span></span><span></span><span></span>
       </button>
     </nav>
-    <div class="nav-mobile" id="mobileMenu">
-    </div>
+    <div class="nav-mobile" id="mobileMenu"></div>
   </div>
 
-  <!-- page content -->
-  <section class="page-section" id="estimator">
-    <a href="../index.html#portfolio" class="back-link">Back to Portfolio</a>
+  <!-- Page content -->
+  <main class="project-page" id="main-content">
 
-    <h1>Item Price Estimator</h1>
+    <div class="project-header">
+      <a href="../index.html#portfolio" class="back-link">Back to Portfolio</a>
+      <h1>Item Price Estimator</h1>
+      <div class="page-divider"><span>✦</span></div>
+    </div>
 
-    <div class="page-divider"><span>✦</span></div>
+    <div class="project-split">
 
-    <p>The Item Price Estimator app was commissioned for personal use; the client's request was to be able to 
-    have an easy way to price objects they were planning to sell. Special emphasis was placed on using <em>retrieval augmented generation</em>
-    (RAG) to retrieve search results from the internet containing the same (or similar) object in mind, evaluate
-    the object's price based on quality, and store the results in a table that would be saved on the user's local system. 
-    </p>
+      <!-- Demo (left) -->
+      <div class="project-demo">
+        <div class="demo-widget">
+          <div class="w-bg"></div>
+          <div class="w-inner">
 
-    <p>The app first requests access to the device's camera through a MediaDevices API built into the browser itself. 
-    Once the picture is taken, a pre-trained AI image classification model called MobileNet identifies the object 
-    (this runs entirely in-browser thanks to Tensorflow); then the results are sent to the backend, where an API 
-    key calls Google Gemini to do a grounding search for the real-world price.
-    </p>
+            <h2 class="w-title">📸 Item Price Estimator</h2>
+            <p class="w-subtitle">Capture items and get instant price estimates</p>
 
-    <p>Whether you're organizing a garage sale, getting rid of old furniture, or just satisfying your curiosity, 
-    the Item Estimator provides a simple way to help you out.</p>
+            <div class="w-grid">
 
-    <div class="page-divider"><span>✦</span></div>
-
-    <!-- Demo widget -->
-    <div class="demo-widget">
-      <div class="w-bg"></div>
-      <div class="w-inner">
-
-        <h2 class="w-title">📸 Item Price Estimator</h2>
-        <p class="w-subtitle">Capture items and get instant price estimates</p>
-
-        <div class="w-grid">
-
-          <!-- Camera column -->
-          <div class="w-card">
-            <div class="w-camera-box">
-              <video id="w-video" autoplay playsinline></video>
-              <canvas id="w-canvas" style="display:none"></canvas>
-              <div class="w-status">
-                <div class="w-dot" id="w-dot"></div>
-                <span id="w-status-text">Initializing camera…</span>
+              <!-- Camera column -->
+              <div class="w-card">
+                <div class="w-camera-box">
+                  <video id="w-video" autoplay playsinline></video>
+                  <canvas id="w-canvas" style="display:none"></canvas>
+                  <div class="w-status">
+                    <div class="w-dot" id="w-dot"></div>
+                    <span id="w-status-text">Initializing camera…</span>
+                  </div>
+                </div>
+                <div class="w-controls">
+                  <button class="w-btn w-btn-capture" id="w-capture" disabled onclick="wCapture()">
+                    📷 Capture Item
+                  </button>
+                  <button class="w-btn w-btn-clear" onclick="wClearAll()">
+                    🗑️ Clear All
+                  </button>
+                </div>
               </div>
+
+              <!-- Results column -->
+              <div class="w-card">
+                <div class="w-results-header">
+                  <div class="w-results-title">🍄 Captured Items</div>
+                  <span class="w-count" id="w-count">0 items</span>
+                </div>
+                <div class="w-table-wrap">
+                  <table class="w-table">
+                    <thead>
+                      <tr>
+                        <th>Image</th>
+                        <th>Item #</th>
+                        <th>Name</th>
+                        <th>Wear</th>
+                        <th>Description</th>
+                        <th>Est. Price</th>
+                        <th>Captured At</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="w-tbody">
+                      <tr class="w-empty">
+                        <td colspan="8">
+                          <span class="w-empty-icon">📦</span>
+                          <p>No items captured yet</p>
+                          <p class="w-empty-hint">Click "Capture Item" to get started</p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div><!-- /w-grid -->
+
+            <div class="w-footer">
+              This is a live demo — items are not saved.
+              For the full experience, <a href="https://item-price-estimator-2ezja4s5lq-uc.a.run.app" target="_blank" rel="noopener noreferrer">open the real app ↗</a>
             </div>
-            <div class="w-controls">
-              <button class="w-btn w-btn-capture" id="w-capture" disabled onclick="wCapture()">
-                📷 Capture Item
-              </button>
-              <button class="w-btn w-btn-clear" onclick="wClearAll()">
-                🗑️ Clear All
-              </button>
-            </div>
-          </div>
 
-          <!-- Results column -->
-          <div class="w-card">
-            <div class="w-results-header">
-              <div class="w-results-title">🍄 Captured Items</div>
-              <span class="w-count" id="w-count">0 items</span>
-            </div>
-            <div class="w-table-wrap">
-              <table class="w-table">
-                <thead>
-                  <tr>
-                    <th>Image</th>
-                    <th>Item #</th>
-                    <th>Name</th>
-                    <th>Wear</th>
-                    <th>Description</th>
-                    <th>Est. Price</th>
-                    <th>Captured At</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="w-tbody">
-                  <tr class="w-empty">
-                    <td colspan="8">
-                      <span class="w-empty-icon">📦</span>
-                      <p>No items captured yet</p>
-                      <p class="w-empty-hint">Click "Capture Item" to get started</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          </div><!-- /w-inner -->
+        </div><!-- /demo-widget -->
+      </div>
 
-        </div><!-- /w-grid -->
+      <!-- Info (right) -->
+      <aside class="project-info">
+        <p>The Item Price Estimator was commissioned for personal use; the client's request was to have an easy way to price objects they were planning to sell. Special emphasis was placed on using <em>retrieval augmented generation</em> (RAG) to retrieve search results for the same or similar object, evaluate its price based on quality, and store the results in a table saved locally.</p>
 
-        <div class="w-footer">
-          This is a live demo — items are not saved.
-          For the full experience, <a href="https://item-price-estimator-2ezja4s5lq-uc.a.run.app" target="_blank" rel="noopener noreferrer">open the real app ↗</a>
-        </div>
+        <p>The app first requests access to the device's camera through the browser's MediaDevices API. Once the picture is taken, a pre-trained AI model called MobileNet identifies the object entirely in-browser via TensorFlow; then the results are sent to the backend, where an API key calls Google Gemini to do a grounding search for the real-world price.</p>
 
-      </div><!-- /w-inner -->
-    </div><!-- /demo-widget -->
-  </section>
+        <p>Whether you're organizing a garage sale, clearing out old furniture, or just satisfying your curiosity, the Item Estimator provides a simple way to help you out.</p>
+      </aside>
 
-  <script>
+    </div>
+  </main>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
        // ── Portfolio nav ───────────────────────────────────────────
     function toggleMenu() {
       document.getElementById('mobileMenu').classList.toggle('open');
@@ -964,10 +1041,12 @@
       return date.toLocaleDateString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
     }
 
-    // ── Stop camera on page leave ───────────────────────────────
+
+    // ── Stop camera when leaving the page ─────────────
     window.addEventListener('beforeunload', () => {
       if (wStream) wStream.getTracks().forEach(t => t.stop());
     });
+
   </script>
 
 </body>

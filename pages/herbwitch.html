@@ -21,7 +21,6 @@
       border-right: 1px solid rgba(201,168,76,0.3);
       border-left: 1px solid rgba(201,168,76,0.3);
     }
-
     .nav-contact-info a {
       position: relative;
       font-family: 'Jost', sans-serif;
@@ -33,7 +32,6 @@
       text-decoration: none;
       transition: color 0.25s;
     }
-
     .nav-contact-info a::after {
       content: '';
       position: absolute;
@@ -46,17 +44,51 @@
       transform-origin: center;
       transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
     }
-
     .nav-contact-info a:hover { color: var(--gold-dark); }
     .nav-contact-info a:hover::after { transform: scaleX(1); }
-
     @media (max-width: 768px) {
       .nav-contact-info { display: none; }
     }
 
+    /* ── Page wrapper ───────────────────────────────────────────── */
+    .project-page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    .project-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .project-header .back-link {
+      display: inline-flex;
+      margin-bottom: 1.5rem;
+    }
+    .project-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--text-dark);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Side-by-side layout ────────────────────────────────────── */
+    .project-split {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* ── Demo pane (left) ───────────────────────────────────────── */
+    .project-demo {
+      min-width: 0;
+    }
+
     .herbwitch-embed {
-      margin: 3rem auto 0;
-      max-width: 1000px;
       border-radius: 1rem;
       overflow: hidden;
       isolation: isolate;
@@ -64,16 +96,39 @@
         0 8px 40px rgba(201,168,76,0.15),
         0 0 0 1px rgba(201,168,76,0.2);
     }
-
     .herbwitch-embed iframe {
       display: block;
       width: 100%;
       height: 780px;
       border: none;
-      border-radius: 1rem;
       background: #f5f0e8;
     }
 
+    /* ── "Open in new tab" button — shown on mobile ─────────────── */
+    .open-app-btn {
+      display: none;
+      width: 100%;
+      padding: 0.85rem 1.6rem;
+      font-family: 'Jost', sans-serif;
+      font-weight: 400;
+      font-size: 0.82rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--gold-dark);
+      border: 1px solid var(--gold);
+      border-radius: 4px;
+      background: linear-gradient(135deg, rgba(245,233,196,0.55), rgba(232,208,138,0.18));
+      transition: background 0.3s, box-shadow 0.3s;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .open-app-btn:hover {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-pale));
+      box-shadow: 0 2px 16px rgba(201,168,76,0.28);
+    }
+
+    /* Fallback if iframe is blocked */
     .embed-fallback {
       display: none;
       padding: 3rem;
@@ -82,42 +137,40 @@
       border-radius: 1rem;
       border: 1px solid rgba(201,168,76,0.2);
     }
+    .embed-fallback p { margin-bottom: 1.5rem; }
 
-    .embed-fallback p {
-      margin-bottom: 1.5rem;
+    /* ── Info pane (right) ──────────────────────────────────────── */
+    .project-info {
+      position: sticky;
+      top: calc(var(--nav-height) + 1.5rem);
     }
-
-    .open-link {
-      display: inline-block;
-      padding: 0.6rem 1.6rem;
+    .project-info p {
       font-family: 'Jost', sans-serif;
-      font-weight: 400;
-      font-size: 0.78rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      text-decoration: none;
-      color: var(--gold-dark);
-      border: 1px solid var(--gold);
-      border-radius: 2px;
-      background: linear-gradient(135deg, rgba(245,233,196,0.55), rgba(232,208,138,0.18));
-      transition: background 0.3s, box-shadow 0.3s;
-    }
-
-    .open-link:hover {
-      background: linear-gradient(135deg, var(--gold-light), var(--gold-pale));
-      box-shadow: 0 2px 16px rgba(201,168,76,0.28);
-    }
-
-    .page-section p {
-      max-width: 65ch;
-      margin: 0 auto 1rem;
+      font-weight: 300;
+      font-size: 0.98rem;
       line-height: 1.8;
+      color: var(--text-mid);
+      margin-bottom: 1rem;
     }
 
-    @media (max-width: 768px) {
-      .herbwitch-embed iframe {
-        height: 600px;
+    /* ── Mobile ─────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .project-split {
+        grid-template-columns: 1fr;
       }
+      .project-info {
+        position: static;
+        order: -1;
+        text-align: center;
+      }
+      .project-info p {
+        max-width: 65ch;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      /* Hide the iframe on mobile — show button instead */
+      .herbwitch-embed { display: none; }
+      .open-app-btn { display: block; }
     }
   </style>
 </head>
@@ -137,53 +190,63 @@
         <span></span><span></span><span></span>
       </button>
     </nav>
-    <div class="nav-mobile" id="mobileMenu">
-    </div>
+    <div class="nav-mobile" id="mobileMenu"></div>
   </div>
 
   <!-- Page content -->
-  <section class="page-section" id="main-content">
-    <a href="../index.html#portfolio" class="back-link">Back to Portfolio</a>
+  <main class="project-page" id="main-content">
 
-    <h1>HerbWitch</h1>
-
-    <div class="page-divider"><span>✦</span></div>
-
-    <p>HerbWitch is an herbal remedy advisor powered by Claude AI. Describe what's ailing you
-    and a three-agent pipeline — an Interpreter, a Researcher, and the Witch herself — works
-    together to surface relevant herbal wisdom drawn from trusted botanical sources.</p>
-
-    <p>All herb recommendations are grounded in citations from approved research databases,
-    so every suggestion links back to a real source. No hallucinations, just plants.</p>
-
-    <div class="page-divider"><span>✦</span></div>
-
-    <!-- HerbWitch iframe embed -->
-    <div class="herbwitch-embed" id="embedContainer">
-      <iframe
-        src="https://herbwitch.vercel.app/"
-        title="HerbWitch — Herbal Remedy Advisor"
-        loading="lazy"
-        sandbox="allow-scripts allow-same-origin allow-forms"
-        onerror="showFallback()"
-      ></iframe>
+    <div class="project-header">
+      <a href="../index.html#portfolio" class="back-link">Back to Portfolio</a>
+      <h1>HerbWitch</h1>
+      <div class="page-divider"><span>✦</span></div>
     </div>
 
-    <!-- Fallback if iframe is blocked -->
-    <div class="embed-fallback" id="embedFallback">
-      <p>The embedded demo isn't available in your browser. Open it directly instead:</p>
-      <a href="https://herbwitch.vercel.app/" target="_blank" rel="noopener noreferrer" class="open-link">
-        Open HerbWitch ↗
-      </a>
-    </div>
+    <div class="project-split">
 
-  </section>
+      <!-- Demo (left) -->
+      <div class="project-demo">
+        <div class="herbwitch-embed" id="embedContainer">
+          <iframe
+            src="https://herbwitch.vercel.app/"
+            title="HerbWitch — Herbal Remedy Advisor"
+            loading="lazy"
+            sandbox="allow-scripts allow-same-origin allow-forms"
+            onerror="showFallback()"
+          ></iframe>
+        </div>
+
+        <!-- Shown on mobile instead of the iframe -->
+        <a href="https://herbwitch.vercel.app/" target="_blank" rel="noopener noreferrer" class="open-app-btn">
+          Open HerbWitch ↗
+        </a>
+
+        <!-- Fallback if iframe is blocked on desktop -->
+        <div class="embed-fallback" id="embedFallback">
+          <p>The embedded demo isn't available in your browser. Open it directly instead:</p>
+          <a href="https://herbwitch.vercel.app/" target="_blank" rel="noopener noreferrer" class="open-app-btn" style="display:inline-block;width:auto;">
+            Open HerbWitch ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Info (right) -->
+      <aside class="project-info">
+        <p>HerbWitch is an herbal remedy advisor powered by Claude AI. Describe what's ailing you
+        and a three-agent pipeline — an Interpreter, a Researcher, and the Witch herself — works
+        together to surface relevant herbal wisdom drawn from trusted botanical sources.</p>
+
+        <p>All herb recommendations are grounded in citations from approved research databases,
+        so every suggestion links back to a real source. No hallucinations, just plants.</p>
+      </aside>
+
+    </div>
+  </main>
 
   <script>
     function toggleMenu() {
       document.getElementById('mobileMenu').classList.toggle('open');
     }
-
     function showFallback() {
       document.getElementById('embedContainer').style.display = 'none';
       document.getElementById('embedFallback').style.display = 'block';
