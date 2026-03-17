@@ -183,7 +183,11 @@
       <a href="../index.html" class="nav-logo">Olivia Balas</a>
       <div class="nav-contact-info">
         <a href="tel:7202325930">(720)-232-5930</a>
+<<<<<<< HEAD
         <a href="mailto:303computing@303computing.ai">303computing@303computing.ai</a>
+=======
+        <a href="/cdn-cgi/l/email-protection#d1e2e1e2b2bebca1a4a5b8bfb691e2e1e2b2bebca1a4a5b8bfb6ffb0b8"><span class="__cf_email__" data-cfemail="eedddedd8d81839e9b9a878089aedddedd8d81839e9b9a878089c08f87">[email&#160;protected]</span></a>
+>>>>>>> 30e76dd (Update info about herbwitch app to be more accurate)
         <a href="https://www.linkedin.com/in/olivia-balas-myprofile/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </div>
       <button class="nav-hamburger" aria-label="Open menu" onclick="toggleMenu()">
@@ -239,6 +243,7 @@
 
         <p>Like BugCal, the frontend handles the UI and the backend handles the API calls. There are 
         three agents that run in real time when the user puts in a request. The first agent 
+<<<<<<< HEAD
         reads the description and distills it into a list of ailments (eg "period gramps, sore stomach).
         The app itself has several pages about herbs selected from hard-coded approved sources, and this is 
         where the second agent comes into play; looks the ailment list up against a hardcoded herb map, 
@@ -250,6 +255,21 @@
         <p>The hardcoded herb map has 175 specific urls to prevent hallucinations and/or inaccurate information
         being spread. The third agent's system forbids recommending anything not in the provided excerpts and 
         truthfully states if there are no relevant herbs or ailments to help with the request. 
+=======
+        reads the description and distills it into a list of ailments (e.g. "period cramps, sore stomach").
+        The app itself has several pages about herbs selected from hard-coded approved sources, and this is 
+        where the second agent comes into play; it looks the ailment list up against a hardcoded herb map,
+        identifies the top 5 matching herbs, and fetches their pages in parallel from up to 5 approved sources.
+        If the user types a herb name directly, it resolves straight to that herb's source pages, 
+        exctracts the excerpts, and returns them to the frontend (with source URLs attached).
+        These excerpts are then synthesized with the user's original ailment into a structured response.
+        </p>
+
+        <p>The hardcoded herb map covers over 200 ailment entries and links to NCCIH,
+        MSKCC, Examine, MedlinePlus, and United Plant Savers. The third agent uses source excerpts as its 
+        primary reference and falls back on its established herbalism knowledge when sources are sparse.
+        Sources are always cited.
+>>>>>>> 30e76dd (Update info about herbwitch app to be more accurate)
         </p>
 
         <p>The app has a small 'fun fact of the day' widget, where the server extracts information about a specific 
@@ -264,6 +284,7 @@
     </div>
   </main>
 
+<<<<<<< HEAD
   <script>
     function toggleMenu() {
       document.getElementById('mobileMenu').classList.toggle('open');
@@ -275,3 +296,8 @@
   </script>
 </body>
 </html>
+=======
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    function toggleMenu() {
+      document.getElem
+>>>>>>> 30e76dd (Update info about herbwitch app to be more accurate)
