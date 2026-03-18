@@ -11,11 +11,6 @@
 
   <link rel="stylesheet" href="../styles/style.css">
 
-  <!-- React + ReactDOM + Babel (no build step needed) -->
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-
   <style>
     .nav-contact-info {
       display: flex;
@@ -92,10 +87,12 @@
     .project-demo {
       min-width: 0; /* prevents grid blowout */
     }
-    #bugcal-root {
+    #bugcal-frame {
+      width: 100%;
+      height: 800px;
+      border: none;
       border-radius: 1rem;
-      overflow: hidden;
-      isolation: isolate;
+      display: block;
       box-shadow:
         0 8px 40px rgba(201,168,76,0.12),
         0 0 0 1px rgba(201,168,76,0.18);
@@ -166,22 +163,16 @@
 
       <!-- Demo (left) -->
       <div class="project-demo">
-        <div id="bugcal-root"></div>
+        <iframe
+          id="bugcal-frame"
+          src="https://bugcal-513255025979.us-central1.run.app"
+          title="BugCal — Live Demo"
+          allow="microphone"
+        ></iframe>
       </div>
 
       <!-- Info (right) -->
       <aside class="project-info">
-        <p>BugCal is a personal calendar app made with Claude AI. It is a simple app to use, but 
-        there was a lot of complexity in its creation.
-        </p>
-
-        <p>The frontend handles the UI and calls the agents, while the backend acts as a proxy between
-        the frontend and Anthropic's AI. There are five independent agents that handle different functions and 
-        wprk together to create a seamless user experience. These agents parse free-form text,
-        detect schedule conflicts, verify holiday dates against live web results, interpret voice 
-        commands, and convert timezones.
-        </p>
-
         <p>You have five calendar views in total: year, month, week, day, and agenda. This enables 
         you to see your schedule in your preferred views. Events can be scheduled to reocurr daily, 
         weekly, biweekly, monthly, or yearly; customization of occurence limits and optional end dates is also
@@ -200,27 +191,6 @@
 
     </div>
   </main>
-
-  <!-- Load and mount BugCal -->
-  <script>
-    fetch('../src/BugCal.js')
-      .then(r => {
-        console.log('BugCal.js fetch status:', r.status, r.url);
-        return r.text();
-      })
-      .then(src => {
-        const compiled = Babel.transform(src, { presets: ['react'] }).code;
-        const fn = new Function('React', 'ReactDOM', compiled + '\nreturn BugCalendar;');
-        const BugCalendar = fn(React, ReactDOM);
-        const root = ReactDOM.createRoot(document.getElementById('bugcal-root'));
-        root.render(React.createElement(BugCalendar));
-      })
-      .catch(err => {
-        console.error('BugCal load error:', err);
-        document.getElementById('bugcal-root').innerHTML =
-          '<p style="color:red;padding:2rem">Failed to load BugCal: ' + err.message + '</p>';
-      });
-  </script>
 
   <script>
     function toggleMenu() {
