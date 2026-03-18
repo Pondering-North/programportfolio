@@ -11,6 +11,11 @@
 
   <link rel="stylesheet" href="../styles/style.css">
 
+  <!-- React + ReactDOM + Babel (no build step needed) -->
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
   <style>
     .nav-contact-info {
       display: flex;
@@ -87,13 +92,10 @@
     .project-demo {
       min-width: 0; /* prevents grid blowout */
     }
-    #bugcal-frame {
-      width: 100%;
-      height: 800px;
-      border: none;
+    #bugcal-root {
       border-radius: 1rem;
       overflow: hidden;
-      display: block;
+      isolation: isolate;
       box-shadow:
         0 8px 40px rgba(201,168,76,0.12),
         0 0 0 1px rgba(201,168,76,0.18);
@@ -164,43 +166,61 @@
 
       <!-- Demo (left) -->
       <div class="project-demo">
-        <iframe
-          id="bugcal-frame"
-          src="https://bugcal-513255025979.us-central1.run.app"
-          title="BugCal — Live Demo"
-          allow="microphone"
-        ></iframe>
+        <div id="bugcal-root"></div>
       </div>
 
       <!-- Info (right) -->
       <aside class="project-info">
-        <p>You have five calendar views in total: year, month, week, day, and agenda. This enables
-        you to see your schedule in your preferred views. Events can be scheduled to reocurr daily,
-        weekly, biweekly, monthly, or yearly; customization of occurence limits and optional end dates is also
-        supported. You can send yourself reminders at a customized time through your email, or you can
-        get a summary of your next 10 upcoming events. The app also features a search option that filters by
-        event, keyword, color, reoccurence type, or a bug icon of your choosing.
+        <p>BugCal is a personal calendar app made with Claude AI. It is a simple app to use, but 
+        there was a lot of complexity in its creation.
         </p>
 
-        <p>To add an event, you can customize it manually or type in a full sentence
-        on the natural language tab at the top - "standup every Mon/Wed/Fri at 9am for
-        30 min", as an example - and BugCal will parse it automatically. If you prefer to
+        <p>The frontend handles the UI and calls the agents, while the backend acts as a proxy between
+        the frontend and Anthropic's AI. There are five independent agents that handle different functions and 
+        wprk together to create a seamless user experience. These agents parse free-form text,
+        detect schedule conflicts, verify holiday dates against live web results, interpret voice 
+        commands, and convert timezones.
+        </p>
+
+        <p>You have five calendar views in total: year, month, week, day, and agenda. This enables 
+        you to see your schedule in your preferred views. Events can be scheduled to reocurr daily, 
+        weekly, biweekly, monthly, or yearly; customization of occurence limits and optional end dates is also
+        supported. You can send yourself reminders at a customized time through your email, or you can 
+        get a summary of your next 10 upcoming events. The app also features a search option that filters by 
+        event, keyword, color, reoccurence type, or a bug icon of your choosing. 
+        </p>
+
+        <p>To add an event, you can customize it manually or type in a full sentence 
+        on the natural language tab at the top - "standup every Mon/Wed/Fri at 9am for 
+        30 min", as an example - and BugCal will parse it automatically. If you prefer to 
         speak, Bugcal fully supports voice command.
         </p>
 
-        <p style="font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-dark);margin-top:1.5rem;">
-          Built with
-        </p>
-        <p style="font-size:0.88rem;line-height:1.9;">
-          React 18 · Vite · Node.js · Express<br>
-          Anthropic Claude API (5 AI agents)<br>
-          Web Speech API · Nodemailer / Gmail SMTP<br>
-          Google Cloud Run · Cloud Secret Manager
-        </p>
       </aside>
 
     </div>
   </main>
+
+  <!-- Load and mount BugCal -->
+  <script>
+    fetch('../src/BugCal.js')
+      .then(r => {
+        console.log('BugCal.js fetch status:', r.status, r.url);
+        return r.text();
+      })
+      .then(src => {
+        const compiled = Babel.transform(src, { presets: ['react'] }).code;
+        const fn = new Function('React', 'ReactDOM', compiled + '\nreturn BugCalendar;');
+        const BugCalendar = fn(React, ReactDOM);
+        const root = ReactDOM.createRoot(document.getElementById('bugcal-root'));
+        root.render(React.createElement(BugCalendar));
+      })
+      .catch(err => {
+        console.error('BugCal load error:', err);
+        document.getElementById('bugcal-root').innerHTML =
+          '<p style="color:red;padding:2rem">Failed to load BugCal: ' + err.message + '</p>';
+      });
+  </script>
 
   <script>
     function toggleMenu() {
