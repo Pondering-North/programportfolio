@@ -11,11 +11,6 @@
 
   <link rel="stylesheet" href="../styles/style.css">
 
-  <!-- React + ReactDOM + Babel (no build step needed) -->
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-
   <style>
     .nav-contact-info {
       display: flex;
@@ -92,10 +87,13 @@
     .project-demo {
       min-width: 0; /* prevents grid blowout */
     }
-    #bugcal-root {
+    #bugcal-frame {
+      width: 100%;
+      height: 800px;
+      border: none;
       border-radius: 1rem;
       overflow: hidden;
-      isolation: isolate;
+      display: block;
       box-shadow:
         0 8px 40px rgba(201,168,76,0.12),
         0 0 0 1px rgba(201,168,76,0.18);
@@ -166,51 +164,49 @@
 
       <!-- Demo (left) -->
       <div class="project-demo">
-        <div id="bugcal-root"></div>
+        <iframe
+          id="bugcal-frame"
+          src="https://bugcal-513255025979.us-central1.run.app"
+          title="BugCal — Live Demo"
+          allow="microphone"
+        ></iframe>
       </div>
 
       <!-- Info (right) -->
       <aside class="project-info">
-        <p>BugCal is a personal calendar app made with Claude AI. It was a personal test to see how Claude
-        can manage creating multiple agents to handle multiple tasks.</p>
-
-        <p>The frontend handles the UI and calls the agents, while the backend acts as a proxy between
-        the frontend and Anthropic's AI - this ensures that the key being used is not exposed. There are 
-        five total agents that handle different functions; the conflict agent (checks for overlapping events),
-        the grounding agent (searches the web to verify US federal holiday dates for the current year), the 
-        reminder agent (fires browser push notifications before events), the timezone agent (converts an event to 
-        a timezone that you requested using natural-language conversion), and the voice command agent (enables you 
-        to create events, search events, and/or change views by voice command).
+        <p>BugCal is a personal calendar that's deceptively simple to use. Just type what you want
+        in plain English — <em>"standup every Mon/Wed/Fri at 9am for 30 min"</em> — and BugCal parses
+        the title, time, duration, and recurrence automatically. Prefer to speak? Hit the mic button
+        and say it out loud; the voice agent handles the rest and reads the confirmation back to you.
         </p>
 
-        <p>You can click any day to add an event, or describe one and let the AI fill in the details. 
-        Scheduling of recurring events, colour-coded categories, agenda views, and event filtering are
-        all supported. Events are saved to your browser's local storage.</p>
+        <p>Five independent AI agents work behind the scenes: one parses free-form text into structured
+        events, one detects schedule conflicts in real time, one verifies US holiday dates against live
+        web results, one interprets voice commands, and one converts times across 20 timezones with
+        awareness of day-boundary crossings.
+        </p>
+
+        <p>Five calendar views — Year, Month, Week, Day, and Agenda — let you see your schedule at
+        whatever resolution makes sense. Events can repeat daily, weekly, biweekly, monthly, yearly,
+        or on fully custom day patterns, each with optional end dates or occurrence limits. You can
+        email yourself a reminder for any event, or get a summary of your next 10 upcoming events
+        delivered to your inbox. A powerful search filters by keyword, color, recurrence type, or
+        any of the 12 bug mascots.
+        </p>
+
+        <p style="font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold-dark);margin-top:1.5rem;">
+          Built with
+        </p>
+        <p style="font-size:0.88rem;line-height:1.9;">
+          React 18 · Vite · Node.js · Express<br>
+          Anthropic Claude API (5 AI agents)<br>
+          Web Speech API · Nodemailer / Gmail SMTP<br>
+          Google Cloud Run · Cloud Secret Manager
+        </p>
       </aside>
 
     </div>
   </main>
-
-  <!-- Load and mount BugCal -->
-  <script>
-    fetch('../src/BugCal.js')
-      .then(r => {
-        console.log('BugCal.js fetch status:', r.status, r.url);
-        return r.text();
-      })
-      .then(src => {
-        const compiled = Babel.transform(src, { presets: ['react'] }).code;
-        const fn = new Function('React', 'ReactDOM', compiled + '\nreturn BugCalendar;');
-        const BugCalendar = fn(React, ReactDOM);
-        const root = ReactDOM.createRoot(document.getElementById('bugcal-root'));
-        root.render(React.createElement(BugCalendar));
-      })
-      .catch(err => {
-        console.error('BugCal load error:', err);
-        document.getElementById('bugcal-root').innerHTML =
-          '<p style="color:red;padding:2rem">Failed to load BugCal: ' + err.message + '</p>';
-      });
-  </script>
 
   <script>
     function toggleMenu() {
