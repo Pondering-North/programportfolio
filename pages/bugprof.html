@@ -175,22 +175,24 @@
       <!-- Info (right) -->
       <aside class="project-info">
 
-        <p>Ento-Professo Search 3000 is a faculty research tool that scrapes and aggregates entomology
-        professor data from university department pages across the United States. It uses a
-        multi-agent AI pipeline to fetch, parse, and structure faculty information — including
-        names, titles, research areas, emails, and profile links — into a searchable, exportable database.
+        <p>Ento-Professo Search 3000 is a faculty research tool made for personal use. The goal of this app is to
+        find and aggregate the information of faculty from entomology-focused graduate programs, converting the 
+        results into into a database that can be searched and exported. To do this, Ento-Professo 
+        uses a multi-agent AI pipeline to fetch, parse, and structure faculty information: names, titles, areas 
+        of research, contact information, and links to their profile on the actual sites.
         </p>
 
-        <p>Rather than relying on expensive web-search API calls, the app uses Jina Reader to
-        render JavaScript-heavy university pages server-side, then passes the extracted text to
-        Claude to parse out structured faculty records. This approach keeps costs low while
-        handling the dynamic pages that make up most modern university websites.
+        <p>The app uses a program called Jina Reader that converts URLs to LLM-friendly input: 
+        in this case, by rendering JavaScript-heavy university pages server-side. It then passes the 
+        extracted text to Claude to parse out structured faculty records. This ensures that costs are kept
+        low and enables the app to deal with the dynamic formats of university website pages.
         </p>
 
-        <p>Results can be filtered by name, research area, or email in real time, and exported
-        as either CSV or JSON for use in further research. The app currently indexes faculty
-        from the University of Arizona, Kansas State University, and the University of Hawaii
-        (CTAHR), with more schools planned.
+        <p>The app currently indexes faculty from the University of Arizona, Kansas State University, 
+        and the University of Hawaii(CTAHR), but more schools are planned to be added. It also supports
+        searching by faculty name, title, area of research, and email. For personal use, you can export
+        the results as a CSV or JSON file. I currently plan on adding more export formats and the ability
+        to compress results into a drop-down bar to conserve readability.
         </p>
 
       </aside>
