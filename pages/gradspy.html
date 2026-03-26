@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GradHunter — Olivia Balas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../styles/style.css">
+
+  <style>
+    .nav-contact-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.2rem;
+      padding: 0 1.2rem;
+      border-right: 1px solid rgba(201,168,76,0.3);
+      border-left: 1px solid rgba(201,168,76,0.3);
+    }
+    .nav-contact-info a {
+      position: relative;
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-mid);
+      text-decoration: none;
+      transition: color 0.25s;
+    }
+    .nav-contact-info a::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    }
+    .nav-contact-info a:hover { color: var(--gold-dark); }
+    .nav-contact-info a:hover::after { transform: scaleX(1); }
+    @media (max-width: 768px) {
+      .nav-contact-info { display: none; }
+    }
+
+    /* ── Page wrapper ───────────────────────────────────────────── */
+    .project-page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* ── Header block (back link + title + divider) ─────────────── */
+    .project-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .project-header .back-link {
+      display: inline-flex;
+      margin-bottom: 1.5rem;
+    }
+    .project-header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      color: var(--text-dark);
+      letter-spacing: 0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── Side-by-side layout ────────────────────────────────────── */
+    .project-split {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* ── Info pane (right) ──────────────────────────────────────── */
+    .project-info {
+      position: sticky;
+      top: calc(var(--nav-height) + 1.5rem);
+    }
+    .project-info p {
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      font-size: 0.98rem;
+      line-height: 1.8;
+      color: var(--text-mid);
+      margin-bottom: 1rem;
+    }
+
+    /* ── Mobile: stack vertically ───────────────────────────────── */
+    @media (max-width: 900px) {
+      .project-split {
+        grid-template-columns: 1fr;
+      }
+      .project-info {
+        position: static;
+        /* Show info above demo on mobile */
+        order: -1;
+        text-align: center;
+      }
+      .project-info p {
+        max-width: 65ch;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Navigation -->
+  <div class="nav-wrapper">
+    <nav class="nav-inner" aria-label="Main navigation">
+      <a href="../index.html" class="nav-logo">Olivia Balas</a>
+      <div class="nav-contact-info">
+        <a href="tel:7202325930">(720)-232-5930</a>
+        <a href="mailto:303computing@303computing.ai">303computing@303computing.ai</a>
+        <a href="https://www.linkedin.com/in/olivia-balas-myprofile/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </div>
+      <button class="nav-hamburger" aria-label="Open menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+    <div class="nav-mobile" id="mobileMenu"></div>
+  </div>
+
+  <!-- Page content -->
+  <main class="project-page" id="main-content">
+
+    <div class="project-header">
+      <a href="../index.html#portfolio" class="back-link">Back to Portfolio</a>
+      <h1>BugCal</h1>
+      <div class="page-divider"><span>✦</span></div>
+    </div>
+
+    <div class="project-split">
+
+      <!-- Info (right) -->
+      <aside class="project-info">
+
+        <p>Uh oh! Looks like this page is a work in progress! Check back in later!
+        </p>
+
+      </aside>
+
+    </div>
+  </main>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+  </script>
+
+</body>
+</html>
