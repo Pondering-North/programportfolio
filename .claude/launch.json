@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "programportfolio",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-l", "7822", "/Users/olivia/Desktop/Programmed Apps/programportfolio-main"],
+      "port": 7822
+    }
+  ]
+}

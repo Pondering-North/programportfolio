@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Portfolio Test Harness</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: monospace; background: #0d0d0d; color: #ccc; padding: 2rem; }
+    h1 { color: #c9a84c; font-size: 1.4rem; margin-bottom: 0.4rem; letter-spacing: 0.08em; }
+    .subtitle { color: #777; font-size: 0.8rem; margin-bottom: 2rem; }
+    #summary {
+      background: #1a1a1a; border: 1px solid #333; border-radius: 6px;
+      padding: 1rem 1.5rem; margin-bottom: 2rem; font-size: 1rem; line-height: 1.8;
+    }
+    .pass-count { color: #4caf50; font-weight: bold; }
+    .fail-count { color: #f44336; font-weight: bold; }
+    .suite { background: #141414; border: 1px solid #2a2a2a; border-radius: 6px; margin-bottom: 1rem; overflow: hidden; }
+    .suite-header { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 1rem; background: #1e1e1e; cursor: pointer; }
+    .suite-name { color: #c9a84c; font-size: 0.85rem; letter-spacing: 0.05em; }
+    .suite-result { font-size: 0.8rem; }
+    .suite-result.all-pass { color: #4caf50; }
+    .suite-result.has-fail { color: #f44336; }
+    .suite-body { padding: 0.5rem 1rem 0.8rem; }
+    .test { display: flex; gap: 0.6rem; padding: 0.2rem 0; font-size: 0.78rem; align-items: flex-start; }
+    .test-icon { flex-shrink: 0; }
+    .pass .test-icon { color: #4caf50; }
+    .fail .test-icon { color: #f44336; }
+    .test-label { color: #aaa; }
+    .fail .test-label { color: #f44336; }
+    .test-detail { color: #666; font-size: 0.72rem; margin-left: 1.4rem; margin-top: 0.1rem; }
+  </style>
+</head>
+<body>
+  <h1>PORTFOLIO TEST HARNESS</h1>
+  <p class="subtitle">programportfolio — structural &amp; content checks</p>
+  <div id="summary">Running tests...</div>
+  <div id="suites"></div>
+
+  <script>
+    // ── Test runner ──────────────────────────────────────────────────────────
+    const results = [];
+    let currentSuite = null;
+
+    function suite(name) {
+      currentSuite = { name, tests: [] };
+      results.push(currentSuite);
+    }
+
+    function test(label, fn) {
+      try {
+        fn();
+        currentSuite.tests.push({ label, pass: true });
+      } catch (e) {
+        currentSuite.tests.push({ label, pass: false, detail: e.message });
+      }
+    }
+
+    function assert(cond, msg) {
+      if (!cond) throw new Error(msg || 'Assertion failed');
+    }
+
+    function assertContains(str, sub, msg) {
+      if (!str.includes(sub)) throw new Error(msg || `Expected "${sub}" in string`);
+    }
+
+    function assertNotContains(str, sub, msg) {
+      if (str.includes(sub)) throw new Error(msg || `Did not expect "${sub}" in string`);
+    }
+
+    // ── Load pages as text ───────────────────────────────────────────────────
+    async function fetchPage(path) {
+      const r = await fetch(path);
+      if (!r.ok) throw new Error(`HTTP ${r.status} for ${path}`);
+      return r.text();
+    }
+
+    async function fetchDOM(path) {
+      const html = await fetchPage(path);
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      return { doc, html };
+    }
+
+    // ── Run all suites ───────────────────────────────────────────────────────
+    async function runAll() {
+      const [
+        { doc: idx, html: idxHTML },
+        { doc: bugcal },
+        { doc: bugprof },
+        { doc: herb },
+        { doc: ipr },
+        { doc: gradspy, html: gradspyHTML },
+      ] = await Promise.all([
+        fetchDOM('../index.html'),
+        fetchDOM('../pages/bugcal.html'),
+        fetchDOM('../pages/bugprof.html'),
+        fetchDOM('../pages/herbwitch.html'),
+        fetchDOM('../pages/item-price-estimator.html'),
+        fetchDOM('../pages/gradspy.html'),
+      ]);
+
+      // ── Suite 1: index.html — page metadata ────────────────────────────
+      suite('Suite 1 — index.html: metadata');
+      test('has <title>', () => assert(idx.title.trim().length > 0, 'title empty'));
+      test('title contains "Olivia"', () => assertContains(idx.title, 'Olivia'));
+      test('has viewport meta', () => assert(idx.querySelector('meta[name="viewport"]'), 'no viewport meta'));
+      test('has charset meta', () => assert(idx.querySelector('meta[charset]'), 'no charset'));
+      test('stylesheet linked', () => assert(idx.querySelector('link[rel="stylesheet"]'), 'no stylesheet'));
+
+      // ── Suite 2: index.html — navigation ──────────────────────────────
+      suite('Suite 2 — index.html: navigation');
+      test('nav element exists', () => assert(idx.querySelector('nav'), 'no nav'));
+      test('logo link present', () => assert(idx.querySelector('.nav-logo'), 'no .nav-logo'));
+      test('logo links to #home', () => assertContains(idx.querySelector('.nav-logo').getAttribute('href'), '#home'));
+      test('skip link present', () => assert(idx.querySelector('.skip-link'), 'no skip link'));
+      test('hamburger button present', () => assert(idx.querySelector('.nav-hamburger'), 'no hamburger'));
+      test('mobile menu div present', () => assert(idx.querySelector('#mobileMenu'), 'no #mobileMenu'));
+
+      // ── Suite 3: index.html — carousel structure ───────────────────────
+      suite('Suite 3 — index.html: carousel structure');
+      const track = idx.querySelector('#carouselTrack');
+      test('#carouselTrack exists', () => assert(track, 'no #carouselTrack'));
+      const slides = idx.querySelectorAll('.carousel-slide');
+      test('has exactly 5 carousel slides', () => assert(slides.length === 5, `got ${slides.length} slides, expected 5`));
+      test('carousel controls exist', () => assert(idx.querySelector('.carousel-controls'), 'no .carousel-controls'));
+      test('only one carousel-controls block', () => assert(idx.querySelectorAll('.carousel-controls').length === 1, `got ${idx.querySelectorAll('.carousel-controls').length} .carousel-controls`));
+      test('#prevBtn exists', () => assert(idx.querySelector('#prevBtn'), 'no #prevBtn'));
+      test('#nextBtn exists', () => assert(idx.querySelector('#nextBtn'), 'no #nextBtn'));
+      test('#indicators exists', () => assert(idx.querySelector('#indicators'), 'no #indicators'));
+      test('totalSlides JS var equals 5', () => assertContains(idxHTML, 'const totalSlides = 5', 'totalSlides not 5'));
+
+      // ── Suite 4: index.html — carousel slide content ───────────────────
+      suite('Suite 4 — index.html: carousel slide content');
+      const slideTexts = [...slides].map(s => s.textContent);
+      const slideTitles = [...idx.querySelectorAll('.carousel-title')].map(t => t.textContent.trim());
+
+      test('slide 1 title is "Item Price Estimator"', () => assert(slideTitles[0] === 'Item Price Estimator', `got "${slideTitles[0]}"`));
+      test('slide 2 title is "BugCal"', () => assert(slideTitles[1] === 'BugCal', `got "${slideTitles[1]}"`));
+      test('slide 3 title is "HerbWitch"', () => assert(slideTitles[2] === 'HerbWitch', `got "${slideTitles[2]}"`));
+      test('slide 4 title is "Ento-Professo Search 3000"', () => assert(slideTitles[3] === 'Ento-Professo Search 3000', `got "${slideTitles[3]}"`));
+      test('slide 5 title is "GradHunt"', () => assert(slideTitles[4] === 'GradHunt', `got "${slideTitles[4]}"`));
+      test('GradHunt slide description is "Work in progress."', () => {
+        const desc = slides[4].querySelector('.carousel-description')?.textContent.trim();
+        assert(desc === 'Work in progress.', `got "${desc}"`);
+      });
+      test('GradHunt slide has unique emoji (not 🦋🔍)', () => {
+        const inner = slides[4].querySelector('.carousel-slide-image-inner')?.textContent.trim();
+        assert(inner !== '🦋🔍', 'GradHunt still uses Ento-Professo emoji');
+      });
+      test('all slides have .carousel-cta', () => {
+        slides.forEach((s, i) => assert(s.querySelector('.carousel-cta'), `slide ${i+1} missing .carousel-cta`));
+      });
+
+      // ── Suite 5: index.html — carousel links ───────────────────────────
+      suite('Suite 5 — index.html: carousel slide links');
+      test('slide 1 links to item-price-estimator.html', () => assertContains(slides[0].getAttribute('href'), 'item-price-estimator'));
+      test('slide 2 links to bugcal.html', () => assertContains(slides[1].getAttribute('href'), 'bugcal'));
+      test('slide 3 links to herbwitch.html', () => assertContains(slides[2].getAttribute('href'), 'herbwitch'));
+      test('slide 4 links to bugprof.html', () => assertContains(slides[3].getAttribute('href'), 'bugprof'));
+      test('slide 5 links to gradspy.html', () => assertContains(slides[4].getAttribute('href'), 'gradspy'));
+      test('all slide hrefs start with pages/', () => {
+        slides.forEach((s, i) => assertContains(s.getAttribute('href'), 'pages/', `slide ${i+1} href missing pages/`));
+      });
+
+      // ── Suite 6: index.html — no stale references ──────────────────────
+      suite('Suite 6 — index.html: no stale references');
+      test('no "GradSpy" in carousel descriptions', () => {
+        const descs = [...idx.querySelectorAll('.carousel-description')].map(d => d.textContent);
+        descs.forEach((d, i) => assertNotContains(d, 'GradSpy', `slide ${i+1} description mentions GradSpy`));
+      });
+      test('no orphaned closing </a> outside carousel track', () => {
+        // Count orphaned text between controls divs
+        assertNotContains(idxHTML, 'department pages into a searchable, exportable database. Includes a web ring that connects to GradSpy', 'orphaned slide text found outside carousel');
+      });
+      test('only one #prevBtn in DOM', () => assert(idx.querySelectorAll('#prevBtn').length === 1, `got ${idx.querySelectorAll('#prevBtn').length} #prevBtn`));
+      test('only one #nextBtn in DOM', () => assert(idx.querySelectorAll('#nextBtn').length === 1, `got ${idx.querySelectorAll('#nextBtn').length} #nextBtn`));
+      test('Ento-Professo description mentions GradHunt (not GradSpy)', () => {
+        const entopDesc = slides[3].querySelector('.carousel-description')?.textContent;
+        assertContains(entopDesc, 'GradHunt', 'Ento-Professo description still says GradSpy');
+      });
+
+      // ── Suite 7: index.html — splash & sections ────────────────────────
+      suite('Suite 7 — index.html: splash & sections');
+      test('#splash exists', () => assert(idx.querySelector('#splash'), 'no #splash'));
+      test('#bug-art exists in splash', () => assert(idx.querySelector('#bug-art'), 'no #bug-art'));
+      test('portfolio section exists', () => assert(idx.querySelector('#portfolio'), 'no #portfolio'));
+      test('home section exists', () => assert(idx.querySelector('#home'), 'no #home'));
+      test('.portfolio-carousel exists inside #portfolio', () => {
+        assert(idx.querySelector('#portfolio .portfolio-carousel'), 'no .portfolio-carousel inside #portfolio');
+      });
+
+      // ── Suite 8: pages/bugcal.html ──────────────────────────────────────
+      suite('Suite 8 — pages/bugcal.html: structure');
+      test('title contains "BugCal"', () => assertContains(bugcal.title, 'BugCal'));
+      test('has back link to portfolio', () => assert(bugcal.querySelector('a[href*="#portfolio"]'), 'no back link'));
+      test('h1 says "BugCal"', () => assert(bugcal.querySelector('h1')?.textContent.trim() === 'BugCal', `h1 = "${bugcal.querySelector('h1')?.textContent.trim()}"`));
+      test('stylesheet linked with ../', () => assert(bugcal.querySelector('link[href*="../styles"]'), 'stylesheet path wrong'));
+      test('nav logo links to ../index.html', () => assert(bugcal.querySelector('.nav-logo[href*="../index"]'), 'nav logo not back to index'));
+
+      // ── Suite 9: pages/bugprof.html ─────────────────────────────────────
+      suite('Suite 9 — pages/bugprof.html: structure');
+      test('title contains "Ento-Professo"', () => assertContains(bugprof.title, 'Ento-Professo'));
+      test('has back link to portfolio', () => assert(bugprof.querySelector('a[href*="#portfolio"]'), 'no back link'));
+      test('stylesheet linked with ../', () => assert(bugprof.querySelector('link[href*="../styles"]'), 'stylesheet path wrong'));
+      test('nav logo links to ../index.html', () => assert(bugprof.querySelector('.nav-logo[href*="../index"]'), 'nav logo not back to index'));
+
+      // ── Suite 10: pages/herbwitch.html ──────────────────────────────────
+      suite('Suite 10 — pages/herbwitch.html: structure');
+      test('title contains "HerbWitch"', () => assertContains(herb.title, 'HerbWitch'));
+      test('has back link to portfolio', () => assert(herb.querySelector('a[href*="#portfolio"]'), 'no back link'));
+      test('stylesheet linked with ../', () => assert(herb.querySelector('link[href*="../styles"]'), 'stylesheet path wrong'));
+      test('nav logo links to ../index.html', () => assert(herb.querySelector('.nav-logo[href*="../index"]'), 'nav logo not back to index'));
+
+      // ── Suite 11: pages/item-price-estimator.html ───────────────────────
+      suite('Suite 11 — pages/item-price-estimator.html: structure');
+      test('title not empty', () => assert(ipr.title.trim().length > 0));
+      test('has back link to portfolio', () => assert(ipr.querySelector('a[href*="#portfolio"]'), 'no back link'));
+      test('stylesheet linked with ../', () => assert(ipr.querySelector('link[href*="../styles"]'), 'stylesheet path wrong'));
+      test('nav logo links to ../index.html', () => assert(ipr.querySelector('.nav-logo[href*="../index"]'), 'nav logo not back to index'));
+
+      // ── Suite 12: pages/gradspy.html (GradHunt) ─────────────────────────
+      suite('Suite 12 — pages/gradspy.html: GradHunt page');
+      test('title is "GradHunt — Olivia Balas"', () => assert(gradspy.title === 'GradHunt — Olivia Balas', `got "${gradspy.title}"`));
+      test('h1 says "GradHunt"', () => assert(gradspy.querySelector('h1')?.textContent.trim() === 'GradHunt', `h1 = "${gradspy.querySelector('h1')?.textContent.trim()}"`));
+      test('has back link to portfolio', () => assert(gradspy.querySelector('a[href*="#portfolio"]'), 'no back link'));
+      test('stylesheet linked with ../', () => assert(gradspy.querySelector('link[href*="../styles"]'), 'stylesheet path wrong'));
+      test('nav logo links to ../index.html', () => assert(gradspy.querySelector('.nav-logo[href*="../index"]'), 'nav logo not back to index'));
+      test('no "BugCal" in h1', () => assert(gradspy.querySelector('h1')?.textContent.trim() !== 'BugCal', 'h1 still says BugCal'));
+      test('no "GradHunter" in title', () => assertNotContains(gradspy.title, 'GradHunter', 'title still says GradHunter'));
+      test('work-in-progress notice present', () => assertContains(gradspy.body.textContent, 'work in progress', 'no WIP notice'));
+
+      // ── Render results ───────────────────────────────────────────────────
+      render();
+    }
+
+    function render() {
+      let pass = 0, fail = 0;
+      results.forEach(s => s.tests.forEach(t => t.pass ? pass++ : fail++));
+      const total = pass + fail;
+      const time = new Date().toLocaleTimeString();
+
+      document.getElementById('summary').innerHTML = `
+        <span class="pass-count">✔ PASS: ${pass}</span> &nbsp;
+        <span class="fail-count">✘ FAIL: ${fail}</span> &nbsp;
+        TOTAL: ${total} &nbsp; ${time}
+      `;
+
+      const container = document.getElementById('suites');
+      container.innerHTML = '';
+      results.forEach(s => {
+        const sPass = s.tests.filter(t => t.pass).length;
+        const sFail = s.tests.length - sPass;
+        const allPass = sFail === 0;
+        const el = document.createElement('div');
+        el.className = 'suite';
+        el.innerHTML = `
+          <div class="suite-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? '' : 'none'">
+            <span class="suite-name">${s.name}</span>
+            <span class="suite-result ${allPass ? 'all-pass' : 'has-fail'}">${allPass ? `✔ ${sPass}/${s.tests.length}` : `✘ ${sFail} FAILED`}</span>
+          </div>
+          <div class="suite-body">
+            ${s.tests.map(t => `
+              <div class="test ${t.pass ? 'pass' : 'fail'}">
+                <span class="test-icon">${t.pass ? '✔' : '✘'}</span>
+                <div>
+                  <div class="test-label">${t.label}</div>
+                  ${t.detail ? `<div class="test-detail">${t.detail}</div>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    runAll().catch(err => {
+      document.getElementById('summary').textContent = 'ERROR: ' + err.message;
+    });
+  </script>
+</body>
+</html>
