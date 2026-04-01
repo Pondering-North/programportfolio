@@ -88,14 +88,14 @@
         { doc: bugprof },
         { doc: herb },
         { doc: ipr },
-        { doc: gradspy, html: gradspyHTML },
+        { doc: gradhunt, html: gradhuntHTML },
       ] = await Promise.all([
         fetchDOM('../index.html'),
         fetchDOM('../pages/bugcal.html'),
         fetchDOM('../pages/bugprof.html'),
         fetchDOM('../pages/herbwitch.html'),
         fetchDOM('../pages/item-price-estimator.html'),
-        fetchDOM('../pages/gradspy.html'),
+        fetchDOM('../pages/gradhunt.html'),
       ]);
 
       // ── Suite 1: index.html — page metadata ────────────────────────────
@@ -156,7 +156,7 @@
       test('slide 2 links to bugcal.html', () => assertContains(slides[1].getAttribute('href'), 'bugcal'));
       test('slide 3 links to herbwitch.html', () => assertContains(slides[2].getAttribute('href'), 'herbwitch'));
       test('slide 4 links to bugprof.html', () => assertContains(slides[3].getAttribute('href'), 'bugprof'));
-      test('slide 5 links to gradspy.html', () => assertContains(slides[4].getAttribute('href'), 'gradspy'));
+      test('slide 5 links to gradhunt.html', () => assertContains(slides[4].getAttribute('href'), 'gradhunt'));
       test('all slide hrefs start with pages/', () => {
         slides.forEach((s, i) => assertContains(s.getAttribute('href'), 'pages/', `slide ${i+1} href missing pages/`));
       });
@@ -217,16 +217,16 @@
       test('stylesheet linked with ../', () => assert(ipr.querySelector('link[href*="../styles"]'), 'stylesheet path wrong'));
       test('nav logo links to ../index.html', () => assert(ipr.querySelector('.nav-logo[href*="../index"]'), 'nav logo not back to index'));
 
-      // ── Suite 12: pages/gradspy.html (GradHunt) ─────────────────────────
-      suite('Suite 12 — pages/gradspy.html: GradHunt page');
-      test('title is "GradHunt — Olivia Balas"', () => assert(gradspy.title === 'GradHunt — Olivia Balas', `got "${gradspy.title}"`));
-      test('h1 says "GradHunt"', () => assert(gradspy.querySelector('h1')?.textContent.trim() === 'GradHunt', `h1 = "${gradspy.querySelector('h1')?.textContent.trim()}"`));
-      test('has back link to portfolio', () => assert(gradspy.querySelector('a[href*="#portfolio"]'), 'no back link'));
-      test('stylesheet linked with ../', () => assert(gradspy.querySelector('link[href*="../styles"]'), 'stylesheet path wrong'));
-      test('nav logo links to ../index.html', () => assert(gradspy.querySelector('.nav-logo[href*="../index"]'), 'nav logo not back to index'));
-      test('no "BugCal" in h1', () => assert(gradspy.querySelector('h1')?.textContent.trim() !== 'BugCal', 'h1 still says BugCal'));
-      test('no "GradHunter" in title', () => assertNotContains(gradspy.title, 'GradHunter', 'title still says GradHunter'));
-      test('work-in-progress notice present', () => assertContains(gradspy.body.textContent, 'work in progress', 'no WIP notice'));
+      // ── Suite 12: pages/gradhunt.html (GradHunt) ─────────────────────────
+      suite('Suite 12 — pages/gradhunt.html: GradHunt page');
+      test('title is "GradHunt — Olivia Balas"', () => assert(gradhunt.title === 'GradHunt — Olivia Balas', `got "${gradhunt.title}"`));
+      test('h1 says "GradHunt"', () => assert(gradhunt.querySelector('h1')?.textContent.trim() === 'GradHunt', `h1 = "${gradhunt.querySelector('h1')?.textContent.trim()}"`));
+      test('has back link to portfolio', () => assert(gradhunt.querySelector('a[href*="#portfolio"]'), 'no back link'));
+      test('stylesheet linked with ../', () => assert(gradhunt.querySelector('link[href*="../styles"]'), 'stylesheet path wrong'));
+      test('nav logo links to ../index.html', () => assert(gradhunt.querySelector('.nav-logo[href*="../index"]'), 'nav logo not back to index'));
+      test('no "BugCal" in h1', () => assert(gradhunt.querySelector('h1')?.textContent.trim() !== 'BugCal', 'h1 still says BugCal'));
+      test('no "GradHunter" in title', () => assertNotContains(gradhunt.title, 'GradHunter', 'title still says GradHunter'));
+      test('work-in-progress notice present', () => assertContains(gradhunt.body.textContent, 'work in progress', 'no WIP notice'));
 
       // ── Render results ───────────────────────────────────────────────────
       render();
